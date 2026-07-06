@@ -1,0 +1,1346 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Safe Yatra — Admin Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="js/config.js"></script>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/map.css" />
+  <link rel="stylesheet" href="css/tourist.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/login.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+
+<body>
+
+  <!-- ═══ INTRO ANIMATION ═══ -->
+  <div id="intro-screen-anim">
+    <div class="intro-bg-gradient"></div>
+    <div class="intro-content">
+      <div class="intro-icon-wrap">
+        <svg class="intro-icon" viewBox="0 0 24 24" fill="none" stroke="url(#intro-grad)" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+          <circle cx="12" cy="9" r="2.5" />
+        </svg>
+        <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+          <linearGradient id="intro-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00B4D8" />
+            <stop offset="100%" stop-color="#32E0C4" />
+          </linearGradient>
+        </svg>
+      </div>
+      <div class="intro-title-text">Safe<span>Yatra</span></div>
+      <div class="intro-subtitle-text">Smart Tourist Safety Platform · India</div>
+      <div class="intro-progress-bar">
+        <div class="intro-progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const intro = document.getElementById('intro-screen-anim');
+        if (intro) {
+          intro.classList.add('hide');
+          setTimeout(() => intro.remove(), 800);
+        }
+      }, 1600);
+    });
+  </script>
+
+  <!-- ═══ LOGIN SCREEN ═══ -->
+  <div id="login-screen">
+    <!-- APK Download Button -->
+    <div style="position: absolute; top: 20px; left: 20px; z-index: 9999;">
+      <button onclick="downloadAPK()"
+        style="padding:10px 16px; background:rgba(0,180,216,0.15); color:var(--cyan); border:1px solid rgba(0,180,216,0.4); border-radius:8px; font-size:14px; font-family:'Inter', sans-serif; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; transition:all 0.2s; backdrop-filter:blur(4px);"
+        onmouseover="this.style.background='rgba(0,180,216,0.25)'"
+        onmouseout="this.style.background='rgba(0,180,216,0.15)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download Android App
+      </button>
+      <script>
+        function downloadAPK() {
+          const link = document.createElement('a');
+          link.href = "https://drive.google.com/file/d/1f3-XaIlWk1frfwyF3EPatZcF0lBLbMVx/view?usp=sharing";
+          link.target = "_blank";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      </script>    </div>
+    <div id="login-bg-grid"></div>
+    <div id="login-bg-glow"></div>
+    <div id="login-scan"></div>
+
+    <!-- Floating Thematic Background Materials -->
+    <svg class="bg-mat mat-shield" viewBox="0 0 24 24">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+      <circle cx="12" cy="9" r="2.5" />
+    </svg>
+    <div class="bg-mat mat-node" style="top:25%;left:15%;"></div>
+    <div class="bg-mat mat-node" style="top:75%;left:22%;"></div>
+    <div class="bg-mat mat-node node-green" style="top:32%;right:18%;"></div>
+    <div class="bg-mat mat-coord" style="top:22%;left:16%;">LAT_22.5411<br>LNG_82.1154</div>
+    <div class="bg-mat mat-coord" style="top:76%;left:16%;">SEC_NODE_7X<br>LINK_ACTIVE</div>
+    <div class="bg-mat mat-coord coord-green" style="top:29%;right:19%;">TELEMETRY_ON<br>SYNC_12MS</div>
+
+    <div id="login-wrap">
+      <div id="login-header">
+        <div id="login-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00B4D8" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+            <circle cx="12" cy="9" r="2.5" />
+          </svg>
+        </div>
+        <div id="login-title">Safe <span>Yatra</span></div>
+        <div id="login-subtitle">Smart Tourist Safety Platform · India</div>
+      </div>
+      <div id="login-cards">
+        <div class="login-card card-cmd" id="unified-login-card">
+          <!-- ROLE TOGGLE -->
+          <div class="login-role-toggle" id="login-role-toggle">
+            <button type="button" class="lrt-btn active" id="lrt-cmd" onclick="switchLoginMode('cmd')">
+              <span class="lrt-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg></span>
+              Command Centre
+            </button>
+            <button type="button" class="lrt-btn" id="lrt-user" onclick="switchLoginMode('user')">
+              <span class="lrt-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                </svg></span>
+              Tourist / User
+            </button>
+          </div>
+
+          <!-- ICON + TITLE -->
+          <div class="lc-icon" id="lc-icon-dynamic">
+            <svg id="lc-svg-cmd" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <svg id="lc-svg-user" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <circle cx="12" cy="12" r="10" />
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+            </svg>
+          </div>
+          <div class="lc-title" id="lc-title-dynamic">Command Centre</div>
+          <div class="lc-desc" id="lc-desc-dynamic">Admin access to the full tactical dashboard — geo-fencing, SOS
+            response, tourist monitoring, and AI news zones.</div>
+
+          <!-- CMD FORM -->
+          <div class="lc-form-panel active" id="lc-panel-cmd">
+            <form class="lc-form" onsubmit="return handleLogin(event,'cmd')">
+              <div class="lf-group">
+                <label class="lf-label">Admin ID</label>
+                <input class="lf-input" id="cmd-user" type="text" placeholder="e.g. admin@safeyatra.gov.in"
+                  autocomplete="username" />
+              </div>
+              <div class="lf-group">
+                <label class="lf-label">Password</label>
+                <input class="lf-input" id="cmd-pass" type="password" placeholder="Enter secure passphrase"
+                  autocomplete="current-password" />
+              </div>
+              <div class="lf-error" id="cmd-error"></div>
+              <button type="submit" class="login-btn btn-cmd">🔐 Access Command Centre</button>
+            </form>
+            <div class="lc-footer">Authorized personnel only · <a href="#"
+                onclick="showAdminRegister();return false;">Request access</a></div>
+          </div>
+
+          <!-- USER FORM -->
+          <div class="lc-form-panel" id="lc-panel-user">
+            <form class="lc-form" onsubmit="return handleLogin(event,'user')">
+              <div class="lf-group">
+                <label class="lf-label">Mobile / Email</label>
+                <input class="lf-input" id="user-user" type="text" placeholder="e.g. +91 98765 43210"
+                  autocomplete="username" />
+              </div>
+              <div class="lf-group">
+                <label class="lf-label">OTP / Password</label>
+                <input class="lf-input" id="user-pass" type="password" placeholder="Enter OTP or password"
+                  autocomplete="current-password" />
+              </div>
+              <div class="lf-error" id="user-error"></div>
+              <button type="submit" class="login-btn btn-user">🧭 Login as Tourist</button>
+            </form>
+            <div class="lc-footer">New user? <a href="#" onclick="showRegister();return false;">Register here</a> · <a
+                href="#">Resend OTP</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM RUNNING TICKER -->
+    <div id="login-bottom-ticker">
+      <span id="login-bottom-ticker-inner">SECURE ACCESS REQUIRED &nbsp;·&nbsp; AES-256 ENCRYPTED &nbsp;·&nbsp; FIREBASE
+        PROTECTED &nbsp;·&nbsp; INDIA COVERAGE ACTIVE &nbsp;·&nbsp; GPS TRACKING READY &nbsp;·&nbsp; SOS MONITORING LIVE
+        &nbsp;║&nbsp; SECURE ACCESS REQUIRED &nbsp;·&nbsp; AES-256 ENCRYPTED &nbsp;·&nbsp; FIREBASE PROTECTED
+        &nbsp;·&nbsp; INDIA COVERAGE ACTIVE &nbsp;·&nbsp; GPS TRACKING READY &nbsp;·&nbsp; SOS MONITORING LIVE
+        &nbsp;║&nbsp; SECURE ACCESS REQUIRED &nbsp;·&nbsp; AES-256 ENCRYPTED &nbsp;·&nbsp; FIREBASE PROTECTED
+        &nbsp;·&nbsp; INDIA COVERAGE ACTIVE &nbsp;·&nbsp; GPS TRACKING READY &nbsp;·&nbsp; SOS MONITORING LIVE</span>
+    </div>
+  </div>
+
+  <!-- ═══ REGISTER SCREEN ═══ -->
+  <div id="register-screen">
+    <div id="reg-bg-grid"></div>
+    <div id="reg-bg-glow"></div>
+    <div id="reg-wrap">
+      <div id="reg-header">
+        <div id="reg-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+          </svg>
+        </div>
+        <div id="reg-title">Create <span>Account</span></div>
+        <div id="reg-sub">Tourist Registration</div>
+      </div>
+      <div id="reg-card">
+        <form class="reg-form" id="reg-form-el" onsubmit="return handleRegister(event)">
+          <div class="reg-row">
+            <div class="lf-group">
+              <label class="lf-label">Full Name</label>
+              <input class="lf-input" id="reg-name" type="text" placeholder="e.g. Priya Sharma" required />
+            </div>
+            <div class="lf-group">
+              <label class="lf-label">Mobile Number</label>
+              <input class="lf-input" id="reg-mobile" type="tel" placeholder="+91 98765 43210" required />
+            </div>
+          </div>
+          <div class="lf-group">
+            <label class="lf-label">Email Address</label>
+            <input class="lf-input" id="reg-email" type="email" placeholder="you@example.com" required />
+          </div>
+          <div class="lf-group">
+            <label class="lf-label">Emergency Contact Name & Number</label>
+            <input class="lf-input" id="reg-emergency" type="text" placeholder="e.g. Rahul Sharma — +91 99887 76655" />
+          </div>
+          <div class="areg-sec-label">📷 Identity Verification Documents</div>
+          <div class="lf-group">
+            <label class="lf-label">Aadhaar Card</label>
+            <div class="upload-zone" id="uz-tourist-aadhaar" onclick="document.getElementById('reg-aadhar').click()"
+              ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)"
+              ondrop="uzDrop(event,this,'reg-aadhar')">
+              <input type="file" id="reg-aadhar" accept="image/*,.pdf" style="display:none"
+                onchange="uzFileSelected(this,'uz-tourist-aadhaar')">
+              <span class="uz-icon">🇮🇳</span>
+              <span class="uz-text"><b>Click or drag</b> to upload<br />your Aadhaar Card</span>
+              <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
+            </div>
+          </div>
+          <div class="reg-divider"></div>
+          <div class="reg-row">
+            <div class="lf-group">
+              <label class="lf-label">Create Password</label>
+              <input class="lf-input" id="reg-pass" type="password" placeholder="Min 6 characters" required />
+            </div>
+            <div class="lf-group">
+              <label class="lf-label">Confirm Password</label>
+              <input class="lf-input" id="reg-pass2" type="password" placeholder="Re-enter password" required />
+            </div>
+          </div>
+          <div class="reg-note">By registering you agree to our <a href="#">Terms of Service</a> & <a href="#">Privacy
+              Policy</a></div>
+          <div id="reg-error"></div>
+          <button type="submit" class="login-btn btn-register">✓ Create Account</button>
+        </form>
+        <div id="reg-success">
+          <div id="reg-success-icon">✅</div>
+          <div id="reg-success-title">Account Created!</div>
+          <div id="reg-success-sub">Your tourist account has been registered successfully.<br />You can now login with
+            your credentials.</div>
+          <button class="login-btn btn-user" onclick="backToLogin()" style="max-width:220px;margin:0 auto;">🧭 Go to
+            Login</button>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <button id="reg-back" onclick="backToLogin()">← Back to Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ADMIN REGISTER SCREEN ═══ -->
+  <div id="admin-reg-screen">
+    <div id="areg-bg-grid"></div>
+    <div id="areg-bg-glow"></div>
+    <div id="areg-wrap">
+      <div id="areg-header">
+        <div id="areg-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        </div>
+        <div id="areg-title">Admin <span>Access</span></div>
+        <div id="areg-sub">Command Centre Registration</div>
+      </div>
+      <div id="areg-card">
+        <form class="areg-form" id="areg-form-el" onsubmit="return handleAdminRegister(event)">
+          <div class="reg-row">
+            <div class="lf-group">
+              <label class="lf-label">Full Name</label>
+              <input class="lf-input" id="areg-name" type="text" placeholder="e.g. Inspector Raj Kumar" required />
+            </div>
+            <div class="lf-group">
+              <label class="lf-label">Designation / Rank</label>
+              <input class="lf-input" id="areg-designation" type="text" placeholder="e.g. Sub-Inspector, Tourism Police"
+                required />
+            </div>
+          </div>
+          <div class="reg-row">
+            <div class="lf-group">
+              <label class="lf-label">Official Email</label>
+              <input class="lf-input" id="areg-email" type="email" placeholder="name@gov.in" required />
+            </div>
+            <div class="lf-group">
+              <label class="lf-label">Mobile Number</label>
+              <input class="lf-input" id="areg-mobile" type="tel" placeholder="+91 98765 43210" required />
+            </div>
+          </div>
+          <div class="lf-group">
+            <label class="lf-label">Department / Organization</label>
+            <input class="lf-input" id="areg-dept" type="text" placeholder="e.g. Ministry of Tourism, Govt. of India"
+              required />
+          </div>
+          <div class="reg-divider"></div>
+          <div class="areg-sec-label">📷 Identity Verification Documents</div>
+          <div class="reg-row">
+            <div class="lf-group">
+              <label class="lf-label">Official ID Card</label>
+              <div class="upload-zone" id="uz-idcard" onclick="document.getElementById('areg-idcard').click()"
+                ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)"
+                ondrop="uzDrop(event,this,'areg-idcard')">
+                <input type="file" id="areg-idcard" accept="image/*,.pdf" style="display:none"
+                  onchange="uzFileSelected(this,'uz-idcard')">
+                <span class="uz-icon">🪪</span>
+                <span class="uz-text"><b>Click or drag</b> to upload<br />your official ID card</span>
+                <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
+              </div>
+            </div>
+            <div class="lf-group">
+              <label class="lf-label">Aadhaar Card</label>
+              <div class="upload-zone" id="uz-aadhaar" onclick="document.getElementById('areg-aadhaar').click()"
+                ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)"
+                ondrop="uzDrop(event,this,'areg-aadhaar')">
+                <input type="file" id="areg-aadhaar" accept="image/*,.pdf" style="display:none"
+                  onchange="uzFileSelected(this,'uz-aadhaar')">
+                <span class="uz-icon">🇮🇳</span>
+                <span class="uz-text"><b>Click or drag</b> to upload<br />your Aadhaar card</span>
+                <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
+              </div>
+            </div>
+          </div>
+          <div class="reg-divider"></div>
+          <div class="reg-row">
+            <div class="lf-group">
+              <label class="lf-label">Create Password</label>
+              <input class="lf-input" id="areg-pass" type="password" placeholder="Min 6 characters" required />
+            </div>
+            <div class="lf-group">
+              <label class="lf-label">Confirm Password</label>
+              <input class="lf-input" id="areg-pass2" type="password" placeholder="Re-enter password" required />
+            </div>
+          </div>
+          <div class="reg-note">Your documents will be securely stored and verified by the admin team.<br />Account
+            access will be granted after verification.</div>
+          <div id="areg-progress">
+            <div class="areg-pbar">
+              <div class="areg-pfill" id="areg-pfill"></div>
+            </div>
+            <div id="areg-ptext">Uploading documents…</div>
+          </div>
+          <div id="areg-error"></div>
+          <button type="submit" class="login-btn btn-admin-reg" id="areg-submit-btn">🛡️ Submit for
+            Verification</button>
+        </form>
+        <div id="areg-success">
+          <div style="font-size:48px;margin-bottom:14px;">✅</div>
+          <div style="font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:10px;">Application Submitted!</div>
+          <div class="areg-pending-badge">⏳ PENDING VERIFICATION</div>
+          <div style="font-size:12px;color:var(--textSec);line-height:1.7;margin-bottom:20px;">Your admin registration
+            has been submitted successfully.<br />Our verification team will review your documents.<br />You'll receive
+            access once approved.</div>
+          <button class="login-btn btn-cmd" onclick="backToLoginFromAdmin()" style="max-width:220px;margin:0 auto;">🔐
+            Back to Login</button>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <button id="areg-back" onclick="backToLoginFromAdmin()">← Back to Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BOOT OVERLAY ═══ -->
+  <div id="boot-overlay">
+    <div id="boot-spinner"></div>
+    <div id="boot-text">INITIALIZING…</div>
+    <div id="boot-lines"></div>
+  </div>
+
+  <div id="app" style="display:none;">
+
+    <!-- LEFT PANEL -->
+    <div id="lp">
+      <div id="logo-bar">
+        <div id="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B4D8" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+            <circle cx="12" cy="9" r="2.5" />
+          </svg>
+        </div>
+        <div>
+          <div id="logo-title">Safe <span>Yatra</span></div>
+          <div id="logo-sub">ADMIN COMMAND CENTER</div>
+        </div>
+        <!-- USER PROFILE BADGE -->
+        <div id="user-profile-badge"
+          style="margin-left:auto; display:none; align-items:center; justify-content:center; background:rgba(0,180,216,0.1); width:42px; height:42px; border-radius:50%; border:1px solid rgba(0,180,216,0.2); cursor:pointer; position:relative; transition:all 0.2s;"
+          onclick="toggleProfileModal()">
+          <div id="up-icon" style="display:flex;align-items:center;justify-content:center;color:currentColor;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <div id="up-tooltip"
+            style="position:absolute; top:52px; left:50%; transform:translateX(-50%) translateY(-4px); background:var(--surfaceAlt); color:#E8F4FD; padding:6px 10px; border-radius:6px; font-size:11px; font-weight:700; white-space:nowrap; opacity:0; pointer-events:none; transition:all 0.2s; border:1px solid var(--cyan); box-shadow:0 4px 12px rgba(0,0,0,0.4); z-index:90;">
+            Loading...</div>
+        </div>
+      </div>
+      <div id="pw-bar">
+        <div id="pw-dot"></div>
+        <div id="pw-txt">Powered by <b>OpenStreetMap + Leaflet</b> — No API Key</div>
+      </div>
+      <div id="stats-row">
+        <div class="sc">
+          <div class="sc-l">Tourists</div>
+          <div class="sc-v" id="s-t" style="color:var(--cyan)">12</div>
+        </div>
+        <div class="sc">
+          <div class="sc-l">Zones</div>
+          <div class="sc-v" id="s-z" style="color:var(--textSec)">0</div>
+        </div>
+        <div class="sc">
+          <div class="sc-l">SOS</div>
+          <div class="sc-v" id="s-s" style="color:var(--red)">8</div>
+        </div>
+      </div>
+      <div id="tab-hdr">
+        <div class="sec-lbl">Geo-Fence Management</div>
+        <div id="tab-bar">
+          <button class="tb active" onclick="switchTab('manual',this)">Manual Draw</button>
+          <button class="tb" onclick="switchTab('auto',this)">AI News</button>
+        </div>
+      </div>
+      <div id="tab-body">
+        <div id="tp-manual" class="tp active">
+          <p class="draw-hint">Click <b style="color:var(--text)">Draw Zone</b>, click map points, click first point
+            again to close.</p>
+          <button id="draw-btn" onclick="startDraw()">✚ Draw Zone on Map</button>
+          <button id="cancel-draw-btn" onclick="cancelDraw()">Cancel Drawing</button>
+          <div id="confirm-box">
+            <div class="c-title">✓ POLYGON DRAWN — Name this zone</div>
+            <label class="fl">ZONE NAME</label><input id="z-name" class="fi" type="text"
+              placeholder="e.g. Mumbai Coastal Buffer" />
+            <label class="fl">RISK LEVEL</label>
+            <select id="z-risk" class="fsl">
+              <option value="High">High — Danger (Red)</option>
+              <option value="Medium">Medium — Caution (Orange)</option>
+              <option value="Low">Low — Safe (Green)</option>
+            </select>
+            <div class="cb"><button id="cfm-btn" onclick="confirmZone()">Push to Firestore →</button><button
+                id="dsc-btn" onclick="cancelDraw()">Discard</button></div>
+          </div>
+          <div class="zl-lbl">Active Zones (<span id="z-count">0</span>)</div>
+          <div id="z-empty">No zones yet — draw one above</div>
+          <div id="z-list"></div>
+        </div>
+        <div id="tp-auto" class="tp">
+          <p class="ai-desc">AI scans NewsAPI + GDELT every 10 min. Zones auto-render on map in <b
+              style="color:var(--red)">red</b>, <b style="color:var(--orange)">orange</b> or <b
+              style="color:#FFD600">yellow</b>.</p>
+          <div class="nz-bar"><span class="nz-lbl">AI ZONES</span>
+            <div class="nz-item">
+              <div class="nz-sw" style="background:#D80032"></div><span class="nz-txt">High</span>
+            </div>
+            <div class="nz-item">
+              <div class="nz-sw" style="background:#FFAA00"></div><span class="nz-txt">Med</span>
+            </div>
+            <div class="nz-item">
+              <div class="nz-sw" style="background:#FFD600"></div><span class="nz-txt">Low</span>
+            </div><span id="nz-ct">0 zones</span>
+          </div>
+          <div id="news-list"></div>
+        </div>
+      </div>
+      <div id="ds-box">
+        <div id="ds-hdr">
+          <div id="ds-dot"></div>LIVE DATA STREAM
+        </div>
+        <div id="ds-lines"></div>
+      </div>
+    </div>
+
+    <!-- RESIZE DIVIDER LEFT -->
+    <div class="divider" id="div-left" onmousedown="startResize(event,'left')"></div>
+
+    <!-- CENTER MAP -->
+    <div id="center">
+      <div id="map-topbar">
+        <div id="tb-left">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div id="status-dot"></div><span id="status-text">Maps Live — India</span>
+          </div>
+          <div class="sig-bars">
+            <div class="sb" style="height:4px"></div>
+            <div class="sb" style="height:7px;animation-delay:.2s"></div>
+            <div class="sb" style="height:10px;animation-delay:.4s"></div>
+            <div class="sb" style="height:14px;animation-delay:.6s;background:var(--cyan)"></div>
+          </div>
+          <span id="clock-txt">00:00:00 IST</span>
+        </div>
+        <div id="ticker-wrap"><span id="ticker-inner">SYS ONLINE &nbsp;·&nbsp; FIREBASE LIVE &nbsp;·&nbsp; INDIA
+            COVERAGE ACTIVE &nbsp;·&nbsp; TOURISTS: 12 &nbsp;·&nbsp; ACTIVE SOS: 8 &nbsp;·&nbsp; ZONES: 0 &nbsp;·&nbsp;
+            UPTIME: 00:00:00 &nbsp;·&nbsp; ENCRYPTION: AES-256 &nbsp;║&nbsp; SYS ONLINE &nbsp;·&nbsp; FIREBASE LIVE
+            &nbsp;·&nbsp; INDIA COVERAGE ACTIVE &nbsp;·&nbsp; TOURISTS: 12 &nbsp;·&nbsp; ACTIVE SOS: 8 &nbsp;·&nbsp;
+            ZONES: 0 &nbsp;·&nbsp; UPTIME: 00:00:00 &nbsp;·&nbsp; ENCRYPTION: AES-256</span></div>
+        <div id="map-legend">
+          <div class="leg-i">
+            <div class="leg-d" style="background:var(--red)"></div><span class="leg-l">SOS</span>
+          </div>
+          <div class="leg-i">
+            <div class="leg-d" style="background:var(--orange)"></div><span class="leg-l">Caution</span>
+          </div>
+          <div class="leg-i">
+            <div class="leg-d" style="background:var(--mint)"></div><span class="leg-l">Safe</span>
+          </div>
+          <div class="leg-i">
+            <div class="leg-d" style="background:var(--cyan)"></div><span class="leg-l">Admin</span>
+          </div>
+          <span id="sos-map-ct">0 SOS</span>
+          <button id="sat-toggle" class="map-mode-btn" onclick="toggleMapMode()" title="Toggle Satellite View">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+              </path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="map-container">
+        <div id="map"></div>
+        <div id="map-grid"></div>
+        <div class="mc mc-tl"></div>
+        <div class="mc mc-tr"></div>
+        <div class="mc mc-bl"></div>
+        <div class="mc mc-br"></div>
+        <div id="scan-line"></div>
+        <div id="radar-wrap"><canvas id="radar-canvas" width="130" height="130"></canvas></div>
+        <div id="wx-panel">
+          <div id="wx-p-title">Area Weather<div id="wx-live-dot"></div>
+          </div>
+          <div class="wx-r"><span class="wx-rl">Condition</span><span class="wx-rv" id="wx-cond">—</span></div>
+          <div class="wx-r"><span class="wx-rl">Temp</span><span class="wx-rv" id="wx-temp">—°C</span></div>
+          <div class="wx-r"><span class="wx-rl">Humidity</span><span class="wx-rv" id="wx-hum">—%</span></div>
+          <div class="wx-r"><span class="wx-rl">Wind</span><span class="wx-rv" id="wx-wind">—km/h</span></div>
+          <div class="wx-r"><span class="wx-rl">Visibility</span><span class="wx-rv" id="wx-vis">—km</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN MOBILE TOGGLES -->
+    <div id="admin-mob-btns"
+      style="display:none; position:fixed; bottom:24px; left:20px; right:20px; z-index:10005; gap:12px; justify-content:center; pointer-events:none;">
+      <button onclick="toggleMobilePanel('lp')"
+        style="background:rgba(10,25,41,0.92); backdrop-filter:blur(12px); border:1px solid var(--cyan); color:var(--cyan); padding:12px 24px; border-radius:30px; font-weight:700; font-size:12px; box-shadow:0 8px 32px rgba(0,0,0,0.6); pointer-events:auto; letter-spacing:1px; flex:1; max-width:160px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;"
+        onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+        COMMAND
+      </button>
+      <button onclick="toggleMobilePanel('rp')"
+        style="background:rgba(10,25,41,0.92); backdrop-filter:blur(12px); border:1px solid var(--red); color:var(--red); padding:12px 24px; border-radius:30px; font-weight:700; font-size:12px; box-shadow:0 8px 32px rgba(0,0,0,0.6); pointer-events:auto; letter-spacing:1px; flex:1; max-width:160px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;"
+        onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        ALERTS
+      </button>
+    </div>
+
+    <!-- RESIZE DIVIDER RIGHT -->
+    <div class="divider" id="div-right" onmousedown="startResize(event,'right')"></div>
+
+    <!-- RIGHT PANEL -->
+    <div id="rp">
+      <div id="al-hdr">
+        <div class="ahi">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div id="al-dot"></div><span id="al-lbl">COMMAND ALERTS</span>
+          </div>
+          <div id="al-hdr-right">
+            <button id="clear-sos" onclick="clearAllSOS()">CLEAR ALL</button>
+          </div>
+        </div>
+        <div class="alert-tabs">
+          <button id="atb-active" class="atb active" onclick="switchAlertTab('active')">
+            ONGOING <span id="sos-badge-count" style="margin-left:4px; opacity:0.6">0</span>
+          </button>
+          <button id="atb-resolved" class="atb" onclick="switchAlertTab('resolved')">
+            RESOLVED <span id="res-badge-count" style="margin-left:4px; opacity:0.6">0</span>
+          </button>
+        </div>
+      </div>
+      <div id="uptime-bar">
+        <div class="ub-item"><span class="ub-l">UPTIME</span><span class="ub-v" id="up-val">00:00:00</span></div>
+        <div class="ub-item"><span class="ub-l">PACKETS</span><span class="ub-v" id="pkt-val">0</span></div>
+        <div class="ub-item"><span class="ub-l">PING</span><span class="ub-v" id="ping-val">—ms</span></div>
+        <div class="sig-bars" style="height:12px">
+          <div class="sb" style="height:3px"></div>
+          <div class="sb" style="height:6px;animation-delay:.2s"></div>
+          <div class="sb" style="height:9px;animation-delay:.4s"></div>
+          <div class="sb" style="height:12px;animation-delay:.6s;background:var(--cyan)"></div>
+        </div>
+      </div>
+      <div id="sig-log">
+        <div id="sig-log-inner"></div>
+      </div>
+      <div id="ts">
+        <div class="ts-lbl">Tourist Status</div>
+        <div id="t-rows" style="max-height: 280px; overflow-y: auto; overflow-x: hidden; padding-right: 4px;"></div>
+        <button id="t-toggle" onclick="toggleTourists()">▼ Show More</button>
+      </div>
+      <div id="al-feed" class="alert-pane active"></div>
+      <div id="resolved-feed" class="alert-pane"
+        style="display:none; flex:1; overflow-y:auto; padding:11px 13px; background:rgba(0,0,0,0.15);"></div>
+      <div id="rp-foot">
+        <span id="zct-txt">geo_zones: <span id="zct-val">0</span></span>
+        <div id="fb-s">
+          <div id="fb-dot"></div><span id="fb-lbl">Firebase Live</span>
+          <button id="refresh-btn" onclick="location.reload()"
+            style="background:transparent; border:1px solid var(--cyan); color:var(--cyan); padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; margin-right:6px; transition:0.2s;">REFRESH</button>
+          <button id="logout-btn" onclick="handleLogout()">LOGOUT</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- #app -->
+
+  <!-- ═══ TOURIST DASHBOARD ═══ -->
+  <div id="tourist-app" style="display:none; flex-direction:column; height:100vh; overflow:hidden;">
+    <!-- TOURIST HEADER -->
+    <div id="t-header">
+      <div class="t-hdr-left">
+        <div class="t-logo">🛡️ Safe Yatra</div>
+        <span class="t-role-badge">TOURIST</span>
+      </div>
+      <div class="t-hdr-right">
+        <select id="t-lang" class="t-lang-sel" onchange="changeLang(this.value)">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="bn">বাংলা</option>
+          <option value="ta">தமிழ்</option>
+          <option value="te">తెలుగు</option>
+          <option value="mr">मराठी</option>
+          <option value="gu">ગુજરાતી</option>
+          <option value="kn">ಕನ್ನಡ</option>
+          <option value="ml">മലയാളം</option>
+          <option value="pa">ਪੰਜਾਬੀ</option>
+          <option value="as">অসমীয়া</option>
+        </select>
+        <div id="t-profile-btn" onclick="toggleTouristProfile()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="7" r="4" />
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          </svg>
+          <span id="t-user-name">Tourist</span>
+        </div>
+        <button id="t-refresh-btn" onclick="location.reload()"
+          style="background:transparent; border:1px solid var(--mint); color:var(--mint); padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; margin-right:8px; transition:0.2s;"
+          onmouseover="this.style.background='rgba(50,224,196,0.1)'"
+          onmouseout="this.style.background='transparent'">Refresh</button>
+        <button id="t-logout-btn" onclick="handleLogout()">Logout</button>
+      </div>
+    </div>
+
+    <!-- TOURIST BODY -->
+    <div id="t-body">
+      <!-- LEFT: SIDEBAR + COLUMN -->
+      <div id="t-left-wrap">
+        <!-- ICON NAV -->
+        <div id="t-nav">
+          <div class="t-nav-icon" data-lpanel="weather" onclick="switchLPanel('weather')" title="Weather">
+            🌤
+            <div class="t-nav-label">Weather</div>
+          </div>
+          <div class="t-nav-icon" data-lpanel="news" onclick="switchLPanel('news')" title="Safety News">
+            📰
+            <div class="t-nav-label">News</div>
+          </div>
+          <div class="t-nav-icon" data-lpanel="device" onclick="switchLPanel('device')" title="Device Data">
+            📱
+            <div class="t-nav-label">Device</div>
+          </div>
+          <div class="t-nav-icon" data-lpanel="ai" onclick="switchLPanel('ai')" title="AI Detection">
+            🤖
+            <div class="t-nav-label">AI</div>
+          </div>
+          <div class="t-nav-icon" data-lpanel="contacts" onclick="switchLPanel('contacts')" title="Emergency Contacts">
+            📞
+            <div class="t-nav-label">Contacts</div>
+          </div>
+          <div style="flex-grow: 1;"></div>
+          <div
+            style="writing-mode: vertical-rl; transform: rotate(180deg); font-size: 9px; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; font-weight: 700; opacity: 0.6; display: flex; align-items: center; gap: 8px;">
+            <span
+              style="display:inline-block; width:4px; height:4px; background:var(--cyan); border-radius:50%; animation: blink 2s infinite;"></span>
+            NAV PANEL
+          </div>
+        </div>
+
+        <!-- LEFT COLUMN PANELS -->
+        <div id="t-col-left">
+
+          <!-- WEATHER PANEL -->
+          <div class="t-left-panel" id="lp-weather">
+            <div class="t-card">
+              <div class="t-card-title">🌤 <span data-i18n="weather">Weather & Environment</span></div>
+              <div id="t-wx-main">
+                <span id="t-wx-icon" style="font-size:42px">☀️</span>
+                <div>
+                  <div id="t-wx-temp" style="font-size:28px;font-weight:700;color:var(--text)">34°C</div>
+                  <div id="t-wx-cond" style="font-size:12px;color:var(--textSec)">Clear Sky</div>
+                </div>
+              </div>
+              <div class="t-wx-grid">
+                <div class="t-wx-item">
+                  <div class="t-wx-lbl">Humidity</div>
+                  <div class="t-wx-val" id="t-wx-hum">45%</div>
+                </div>
+                <div class="t-wx-item">
+                  <div class="t-wx-lbl">Wind</div>
+                  <div class="t-wx-val" id="t-wx-wind">12km/h</div>
+                </div>
+                <div class="t-wx-item">
+                  <div class="t-wx-lbl">Visibility</div>
+                  <div class="t-wx-val" id="t-wx-vis">18km</div>
+                </div>
+                <div class="t-wx-item">
+                  <div class="t-wx-lbl">UV Index</div>
+                  <div class="t-wx-val" id="t-wx-uv">6</div>
+                </div>
+              </div>
+              <div id="t-wx-alert" style="display:none" class="t-wx-alert-box">⚠ Weather alert here</div>
+              <div id="t-wx-forecast-wrap">
+                <div class="t-card-title" style="margin-top:12px;margin-bottom:6px">📊 <span data-i18n="forecast">Hourly
+                    Forecast</span></div>
+                <div id="t-wx-forecast" class="t-forecast-row">
+                  <div class="t-fc-loading">Loading forecast...</div>
+                </div>
+              </div>
+            </div>
+            <div class="t-card">
+              <div class="t-card-title">🍃 <span data-i18n="aqi_data">Air Quality Index</span></div>
+              <div class="t-dev-grid">
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">AQI Level</div>
+                  <div class="t-dev-val" style="color:var(--orange)">142 (Moderate)</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">PM 2.5</div>
+                  <div class="t-dev-val">54 µg/m³</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">PM 10</div>
+                  <div class="t-dev-val">90 µg/m³</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">O3 (Ozone)</div>
+                  <div class="t-dev-val">45 µg/m³</div>
+                </div>
+              </div>
+              <div style="font-size:10px; color:var(--textMuted); margin-top:10px; line-height:1.4;">
+                Recommendation: Sensitive groups should consider reducing prolonged outdoor exertion.
+              </div>
+            </div>
+          </div>
+
+          <!-- NEWS PANEL -->
+          <div class="t-left-panel" id="lp-news">
+            <div class="t-card">
+              <div class="t-card-title">📰 <span data-i18n="safety_news">Safety News Feed</span></div>
+              <div id="t-news-feed">
+                <div class="t-fc-loading">Scanning news sources...</div>
+              </div>
+            </div>
+            <div class="t-card">
+              <div class="t-card-title">📡 <span data-i18n="advisories">Official Advisories</span></div>
+              <div class="t-news-item caution">
+                <div class="t-news-hl">Local Traffic Advisory: Highway 44</div>
+                <div class="t-news-meta"><span>Traffic Police</span><span>2 hrs ago</span></div>
+              </div>
+              <div class="t-news-item safe">
+                <div class="t-news-hl">Tourism Festival Ongoing Safely</div>
+                <div class="t-news-meta"><span>Tourism Board</span><span>5 hrs ago</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DEVICE PANEL -->
+          <div class="t-left-panel" id="lp-device">
+            <div class="t-card">
+              <div class="t-card-title">📱 <span data-i18n="device">Device & Phone Data</span></div>
+              <div class="t-dev-grid">
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">Battery</div>
+                  <div class="t-dev-val" id="t-dev-bat">78%</div>
+                  <div class="t-dev-bar">
+                    <div id="t-dev-bat-fill" class="t-dev-fill" style="width:78%;background:var(--mint)"></div>
+                  </div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">Network</div>
+                  <div class="t-dev-val" id="t-dev-net">4G LTE</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">Signal</div>
+                  <div class="t-dev-val" id="t-dev-sig">Strong</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">GPS Accuracy</div>
+                  <div class="t-dev-val" id="t-dev-gps">±8m</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">Altitude</div>
+                  <div class="t-dev-val" id="t-dev-alt">215m</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">Last Activity</div>
+                  <div class="t-dev-val" id="t-dev-act">Just now</div>
+                </div>
+              </div>
+            </div>
+            <div class="t-card">
+              <div class="t-card-title">⚙️ <span data-i18n="diagnostics">Diagnostics & Permissions</span></div>
+              <div class="t-dev-grid">
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">Location Serv.</div>
+                  <div class="t-dev-val" style="color:var(--mint)">Enabled</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">Background App</div>
+                  <div class="t-dev-val" style="color:var(--mint)">Active</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">Mic Access</div>
+                  <div class="t-dev-val" style="color:var(--textSec)">Denied</div>
+                </div>
+                <div class="t-dev-item">
+                  <div class="t-dev-lbl">Storage</div>
+                  <div class="t-dev-val">1.2GB Free</div>
+                </div>
+              </div>
+              <div style="margin-top: 12px;">
+                <div style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:6px;">
+                  <span style="color:var(--textMuted)">App Memory Usage</span><span style="color:var(--cyan)">45
+                    MB</span>
+                </div>
+                <div class="t-dev-bar">
+                  <div class="t-dev-fill" style="width:15%; background:var(--cyan)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI PANEL -->
+          <div class="t-left-panel" id="lp-ai">
+            <div class="t-card">
+              <div class="t-card-title">🤖 <span data-i18n="anomaly">AI Anomaly Detection</span></div>
+              <div class="t-anom-list">
+                <div class="t-anom-item">
+                  <div class="t-anom-dot green"></div><span>Route Deviation</span><span class="t-anom-st">Normal</span>
+                </div>
+                <div class="t-anom-item">
+                  <div class="t-anom-dot green"></div><span>Activity Monitor</span><span class="t-anom-st">Active</span>
+                </div>
+                <div class="t-anom-item">
+                  <div class="t-anom-dot green"></div><span>Signal Stability</span><span class="t-anom-st">Stable</span>
+                </div>
+                <div class="t-anom-item">
+                  <div class="t-anom-dot green"></div><span>Location Integrity</span><span
+                    class="t-anom-st">Verified</span>
+                </div>
+              </div>
+            </div>
+            <div class="t-card">
+              <div class="t-card-title">📋 <span data-i18n="ai_logs">Recent AI Logs</span></div>
+              <div
+                style="font-family:'IBM Plex Mono', monospace; font-size:9px; color:var(--textSec); line-height:1.6;">
+                <div><span style="color:var(--cyan)">[10:42:01]</span> SCAN: Baseline behavior verified.</div>
+                <div><span style="color:var(--cyan)">[10:35:14]</span> UPDATE: Weather pattern normal.</div>
+                <div><span style="color:var(--orange)">[10:15:22]</span> ALERT: Minor speed anomaly detected. Ignored
+                  (matched traffic flow).</div>
+                <div><span style="color:var(--cyan)">[09:50:00]</span> SCAN: Geo-fence perimeter secure.</div>
+                <div><span style="color:var(--cyan)">[09:00:05]</span> SYS: AI Subsystem initialized.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTACTS PANEL -->
+          <div class="t-left-panel" id="lp-contacts">
+            <div class="t-card">
+              <div class="t-card-title">📞 <span data-i18n="contacts">Emergency Contacts</span></div>
+              <div id="t-contacts">
+                <div class="t-contact-item">
+                  <div>
+                    <div class="t-ct-name" id="t-ct-emer-name">Emergency Contact</div>
+                    <div class="t-ct-num" id="t-ct-emer-num">N/A</div>
+                  </div>
+                  <div class="t-ct-actions"><button onclick="tCallEmergency()">📞</button><button
+                      onclick="tWAEmergency()">💬</button></div>
+                </div>
+                <div class="t-contact-item">
+                  <div>
+                    <div class="t-ct-name">Police Control Room</div>
+                    <div class="t-ct-num">100</div>
+                  </div>
+                  <div class="t-ct-actions"><button onclick="window.open('tel:100')">📞</button></div>
+                </div>
+                <div class="t-contact-item">
+                  <div>
+                    <div class="t-ct-name">Tourist Helpline</div>
+                    <div class="t-ct-num">1363</div>
+                  </div>
+                  <div class="t-ct-actions"><button onclick="window.open('tel:1363')">📞</button></div>
+                </div>
+                <div class="t-contact-item">
+                  <div>
+                    <div class="t-ct-name">Women Helpline</div>
+                    <div class="t-ct-num">1091</div>
+                  </div>
+                  <div class="t-ct-actions"><button onclick="window.open('tel:1091')">📞</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CENTER: MAP -->
+      <div id="t-col-center">
+        <div id="t-map-container">
+          <div id="t-map"></div>
+
+          <div id="t-score-mini" onclick="toggleScoreOverlay()">
+            🛡️
+            <div id="t-score-mini-lbl">Safety Score</div>
+            <div id="t-score-mini-val">92</div>
+          </div>
+          <div id="t-score-overlay" onclick="toggleScoreOverlay()">
+            <div class="t-card" id="t-score-card" onclick="event.stopPropagation()">
+              <div style="display:flex; gap:20px;">
+                <!-- Left: Original Score Details -->
+                <div style="flex:1;">
+                  <div class="t-card-title">🛡️ <span data-i18n="safety_score">Tourist Safety Score</span></div>
+                  <div id="t-score-wrap">
+                    <canvas id="t-score-canvas" width="160" height="160"></canvas>
+                    <div id="t-score-center">
+                      <div id="t-score-grade">A</div>
+                      <div id="t-score-val">92 / 100</div>
+                    </div>
+                  </div>
+                  <div id="t-score-factors">
+                    <div class="t-sf"><span>Zone</span><span id="tsf-zone" class="tsf-v safe">SAFE</span></div>
+                    <div class="t-sf"><span>Weather</span><span id="tsf-wx" class="tsf-v">Clear</span></div>
+                    <div class="t-sf"><span>News Threat</span><span id="tsf-news" class="tsf-v safe">Low</span></div>
+                    <div class="t-sf"><span>Battery</span><span id="tsf-bat" class="tsf-v">78%</span></div>
+                    <div class="t-sf"><span>Signal</span><span id="tsf-sig" class="tsf-v">Strong</span></div>
+                    <div class="t-sf"><span>Time</span><span id="tsf-time" class="tsf-v">Day</span></div>
+                  </div>
+                </div>
+                <!-- Right: Extra Info (News, Geo) -->
+                <div style="flex:1.2; display:flex; flex-direction:column; gap:12px;">
+                  <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                    <button class="t-card-title"
+                      onclick="const c = document.getElementById('sc-news-content'); const i = document.getElementById('sc-news-icon'); if(c.style.display==='none'){c.style.display='block';i.textContent='−';}else{c.style.display='none';i.textContent='+';}"
+                      style="margin-bottom:0; font-size:11px; background:transparent; border:none; color:inherit; cursor:pointer; width:100%; text-align:left; display:flex; justify-content:space-between; align-items:center; padding:0;">
+                      <span>📰 Latest Safety News</span>
+                      <span id="sc-news-icon" style="font-size:16px;">+</span>
+                    </button>
+                    <div id="sc-news-content"
+                      style="display:none; margin-top:12px; max-height:120px; overflow-y:auto; padding-right:4px;">
+                    </div>
+                  </div>
+                  <div style="background:var(--bg); border-radius:8px; padding:12px;">
+                    <button class="t-card-title"
+                      onclick="const c = document.getElementById('sc-geo-content'); const i = document.getElementById('sc-geo-icon'); if(c.style.display==='none'){c.style.display='block';i.textContent='−';}else{c.style.display='none';i.textContent='+';}"
+                      style="margin-bottom:0; font-size:11px; background:transparent; border:none; color:var(--orange); cursor:pointer; width:100%; text-align:left; display:flex; justify-content:space-between; align-items:center; padding:0;">
+                      <span>⚠ Geo-Fence Alerts</span>
+                      <span id="sc-geo-icon" style="font-size:16px;">+</span>
+                    </button>
+                    <div id="sc-geo-content"
+                      style="display:none; margin-top:12px; max-height:120px; overflow-y:auto; padding-right:4px;">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="t-weather-mini">
+            <div class="wm-icon" id="wm-icon">☀️</div>
+            <div>
+              <div class="wm-temp" id="wm-temp">--°C</div>
+              <div class="wm-cond" id="wm-cond">Scanning...</div>
+            </div>
+          </div>
+          <button id="t-sat-btn" class="map-mode-btn" onclick="toggleTouristMapMode()"
+            title="Satellite View">🛰</button>
+          <button id="t-center-btn" onclick="centerOnUser()" title="Center on me">📍</button>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div id="t-col-right">
+        <!-- LIVE GPS TRACKING -->
+        <div class="t-card" id="t-gps-card" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="t-card-title">📍 <span data-i18n="live_tracking">Live GPS Tracking</span></div>
+          <div style="font-size:12px; font-weight:600; color:var(--cyan); margin-bottom:4px;" id="tr-name">Tourist Name
+          </div>
+          <div style="font-size:10px; color:var(--text); margin-bottom:12px; line-height:1.4;" id="tr-place">Locating
+            GPS...</div>
+          <div class="t-dev-grid" style="grid-template-columns: 1fr 1fr; margin-bottom:0;">
+            <div class="t-dev-item">
+              <div class="t-dev-lbl">Speed</div>
+              <div class="t-dev-val" id="tr-speed">-- km/h</div>
+            </div>
+            <div class="t-dev-item">
+              <div class="t-dev-lbl">Time</div>
+              <div class="t-dev-val" id="tr-time">--:--:--</div>
+            </div>
+            <div class="t-dev-item">
+              <div class="t-dev-lbl">Lat</div>
+              <div class="t-dev-val" id="tr-lat" style="font-size:11px;">--.-----</div>
+            </div>
+            <div class="t-dev-item">
+              <div class="t-dev-lbl">Lng</div>
+              <div class="t-dev-val" id="tr-lng" style="font-size:11px;">--.-----</div>
+            </div>
+          </div>
+          <div
+            style="flex: 1; overflow-y: auto; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; display: flex; flex-direction: column;">
+            <div style="font-size: 10px; color: var(--textMuted); margin-bottom: 5px; font-weight: 600;">LIVE COORDINATE
+              LOG</div>
+            <div id="gps-log"
+              style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; line-height: 1.6; color: var(--textSec); flex: 1; overflow-y: auto;">
+            </div>
+          </div>
+        </div>
+
+        <!-- SOS PANIC BUTTON -->
+        <div class="t-card" id="t-sos-card">
+          <div class="t-card-title">🆘 <span data-i18n="emergency">Emergency SOS</span></div>
+          <button id="t-sos-btn" onclick="triggerSOS()">
+            <div class="t-sos-ring"></div>
+            <span>SOS</span>
+          </button>
+          <div id="t-sos-status" style="font-size:10px;color:var(--textMuted);text-align:center;margin-top:8px">Press
+            for emergency alert</div>
+        </div>
+
+        <!-- ALERT HISTORY -->
+        <div class="t-card">
+          <div class="t-card-title">📋 <span data-i18n="history">Alert History</span></div>
+          <div id="t-alert-history">
+            <div class="t-gf-empty">No alerts recorded yet</div>
+          </div>
+        </div>
+
+        <!-- PRIVACY & SECURITY -->
+        <div class="t-card" id="t-privacy-card">
+          <div class="t-card-title">🔒 <span data-i18n="privacy">Privacy & Security</span></div>
+          <div class="t-priv-row"><span>End-to-End Encryption</span><span class="t-priv-badge on">AES-256 ✓</span></div>
+          <div class="t-priv-row"><span>Location Sharing</span>
+            <label class="t-toggle"><input type="checkbox" id="t-share-toggle" checked
+                onchange="toggleTracking(this.checked)"><span class="t-slider"></span></label>
+          </div>
+          <div class="t-priv-row"><span>Blockchain Verified</span><span class="t-priv-badge on">Tamper-Proof ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- TOURIST MOBILE TOGGLES (Mirrors Admin) -->
+    <div id="t-mob-btns"
+      style="display:none; position:fixed; bottom:24px; left:20px; right:20px; z-index:10005; gap:12px; justify-content:center; pointer-events:none;">
+      <button onclick="toggleTouristMobilePanel('left')"
+        style="background:rgba(10,25,41,0.92); backdrop-filter:blur(12px); border:1px solid var(--mint); color:var(--mint); padding:12px 24px; border-radius:30px; font-weight:700; font-size:12px; box-shadow:0 8px 32px rgba(0,0,0,0.6); pointer-events:auto; letter-spacing:1px; flex:1; max-width:160px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;"
+        onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg>
+        TOOLS
+      </button>
+      <button onclick="toggleTouristMobilePanel('right')"
+        style="background:rgba(10,25,41,0.92); backdrop-filter:blur(12px); border:1px solid var(--orange); color:var(--orange); padding:12px 24px; border-radius:30px; font-weight:700; font-size:12px; box-shadow:0 8px 32px rgba(0,0,0,0.6); pointer-events:auto; letter-spacing:1px; flex:1; max-width:160px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;"
+        onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        TRACKING
+      </button>
+    </div>
+
+  </div>
+
+  <!-- PROFILE MODAL -->
+  <div id="profile-modal"
+    style="display:none; position:fixed; top:75px; right:24px; background:var(--surfaceAlt); border:1px solid var(--border); border-radius:12px; padding:20px; z-index:99999; box-shadow:0 8px 32px rgba(0,0,0,0.6); min-width:260px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+      <div id="pm-title"
+        style="font-size:14px; font-weight:700; color:#E8F4FD; letter-spacing:0.05em; text-transform:uppercase;">User
+        Profile</div>
+      <button onclick="document.getElementById('profile-modal').style.display='none'"
+        style="background:transparent; border:none; color:var(--textMuted); font-size:18px; cursor:pointer; padding:0;">✕</button>
+    </div>
+    <div
+      style="display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+      <div id="pm-icon"
+        style="width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:currentColor; background:rgba(0,180,216,0.1); border:1px solid rgba(0,180,216,0.3);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      </div>
+      <div>
+        <div id="pm-name" style="font-size:15px; font-weight:700; color:#E8F4FD; margin-bottom:4px;">User</div>
+        <div id="pm-role"
+          style="font-size:10px; color:var(--cyan); text-transform:uppercase; letter-spacing:0.08em; font-family:'IBM Plex Mono',monospace;">
+          Role</div>
+      </div>
+    </div>
+    <div style="font-size:12px; color:var(--textSec); line-height:1.8; margin-bottom:20px;">
+      <div style="display:flex; gap:16px;"><span style="color:var(--textMuted); width:55px;">Email:</span> <span
+          id="pm-email" style="color:#E8F4FD; font-family:'IBM Plex Mono',monospace; white-space:nowrap;">—</span></div>
+      <div style="display:flex; gap:16px;"><span style="color:var(--textMuted); width:55px;">Mobile:</span> <span
+          id="pm-mobile" style="color:#E8F4FD; font-family:'IBM Plex Mono',monospace; white-space:nowrap;">—</span>
+      </div>
+      <div id="pm-extra"></div>
+    </div>
+    <button onclick="handleLogout()"
+      style="width:100%; padding:10px; background:var(--bg); border:1px solid #1A3550; color:#7FAFC8; border-radius:8px; cursor:pointer; font-weight:700; letter-spacing:0.05em; transition:all 0.2s;"
+      onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)';"
+      onmouseout="this.style.borderColor='#1A3550';this.style.color='#7FAFC8';">Log Out</button>
+  </div>
+
+  <!-- CONTACT MODAL -->
+  <div id="cm-overlay" onclick="cmOut(event)">
+    <div id="cm-modal">
+      <div id="cm-hdr">
+        <div id="cm-hdr-l">
+          <div id="cm-badge-wrap"></div>
+          <div id="cm-name">—</div>
+          <div id="cm-id">—</div>
+        </div>
+        <button id="cm-x" onclick="closeCM()">✕</button>
+      </div>
+      <div id="cm-stats">
+        <div class="cms-i">
+          <div class="cms-l">Battery</div>
+          <div class="cms-v" id="cm-bat" style="color:var(--mint)">—%</div>
+        </div>
+        <div class="cms-i">
+          <div class="cms-l">Status</div>
+          <div class="cms-v" id="cm-st" style="color:var(--red)">—</div>
+        </div>
+        <div class="cms-i">
+          <div class="cms-l">Time</div>
+          <div class="cms-v" id="cm-tm" style="color:var(--textSec)">—</div>
+        </div>
+      </div>
+      <div id="cm-loc">
+        <span style="font-size:16px">📍</span>
+        <div id="cm-loc-coords">—</div>
+        <button id="cm-fly-btn" onclick="flyFromModal()">🗺 Fly to</button>
+      </div>
+      <div id="cm-wx-row">
+        <div id="cm-wx-ic">🌤</div>
+        <div id="cm-wx-b">
+          <div id="cm-wx-cond">Loading…</div>
+          <div id="cm-wx-det">—</div>
+          <div id="cm-wx-alrt"></div>
+        </div>
+        <div id="cm-sig-wrap"><span id="cm-sig-lbl">SIGNAL</span>
+          <div id="cm-sig-bars"></div>
+        </div>
+      </div>
+      <div id="cm-acts">
+        <div id="cm-acts-title">Instant Contact Options</div>
+        <div class="cm-grid">
+          <button class="cm-btn cmb-call" onclick="cCall()"><span class="cm-bi">📞</span><span class="cm-bl">Call
+              Now</span></button>
+          <button class="cm-btn cmb-wa" onclick="cWA()"><span class="cm-bi">💬</span><span
+              class="cm-bl">WhatsApp</span></button>
+          <button class="cm-btn cmb-sms" onclick="cSMS()"><span class="cm-bi">✉️</span><span class="cm-bl">Send
+              SMS</span></button>
+          <button class="cm-btn cmb-radio" onclick="cRadio()"><span class="cm-bi">📡</span><span class="cm-bl">Radio
+              Alert</span></button>
+        </div>
+        <div id="cm-note"><b>Emergency:</b> No response in 2 min → dispatch ground unit to GPS coordinates above.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TOURIST DETAIL CARD (ADMIN) ═══ -->
+  <div id="td-overlay" onclick="if(event.target===this)closeTDCard()"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9500;backdrop-filter:blur(4px);opacity:0;transition:opacity .3s;">
+    <div id="td-card"
+      style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);width:420px;max-width:92vw;max-height:88vh;overflow-y:auto;background:#0A1929;border:1px solid #1A3550;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.7);transition:transform .35s cubic-bezier(.22,.68,0,1.15),opacity .3s;opacity:0;">
+      <!-- Header -->
+      <div style="padding:20px 22px 14px;border-bottom:1px solid #1A3550;position:relative;">
+        <button onclick="closeTDCard()"
+          style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--textMuted);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:4px;transition:color .2s;"
+          onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--textMuted)'">&times;</button>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div id="td-avatar"
+            style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#00B4D8,#32E0C4);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;border:2px solid rgba(255,255,255,0.2);flex-shrink:0;">
+          </div>
+          <div>
+            <div id="td-name" style="font-size:16px;font-weight:700;color:#E8F4FD;margin-bottom:2px;"></div>
+            <div id="td-role-badge"
+              style="display:inline-block;font-size:9px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:.05em;">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Info Rows -->
+      <div style="padding:14px 22px;">
+        <div style="font-size:9px;font-weight:700;color:#3D6B8A;letter-spacing:.1em;margin-bottom:10px;">PROFILE
+          INFORMATION</div>
+        <div id="td-info-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+      </div>
+      <!-- Live Location -->
+      <div style="padding:0 22px 14px;">
+        <div style="font-size:9px;font-weight:700;color:#3D6B8A;letter-spacing:.1em;margin-bottom:10px;">LIVE LOCATION
+        </div>
+        <div style="background:#040D18;border:1px solid #1A3550;border-radius:8px;padding:12px 14px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+              <circle cx="12" cy="9" r="2.5" />
+            </svg>
+            <div>
+              <div id="td-coords"
+                style="font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--cyan);font-weight:600;"></div>
+              <div id="td-place" style="font-size:10px;color:var(--textMuted);margin-top:2px;"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div><span style="font-size:9px;color:#3D6B8A;">LAST UPDATE</span>
+              <div id="td-last-update" style="font-size:11px;color:var(--text);font-weight:600;margin-top:2px;"></div>
+            </div>
+            <div><span style="font-size:9px;color:#3D6B8A;">STATUS</span>
+              <div id="td-loc-status" style="font-size:11px;font-weight:600;margin-top:2px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Journey Summary -->
+      <div style="padding:0 22px 14px;">
+        <div style="font-size:9px;font-weight:700;color:#3D6B8A;letter-spacing:.1em;margin-bottom:10px;">JOURNEY &
+          SAFETY</div>
+        <div id="td-journey" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;"></div>
+      </div>
+      <!-- Emergency -->
+      <div style="padding:0 22px 14px;">
+        <div style="font-size:9px;font-weight:700;color:#3D6B8A;letter-spacing:.1em;margin-bottom:10px;">EMERGENCY
+          CONTACT</div>
+        <div id="td-emergency"
+          style="background:#040D18;border:1px solid #1A3550;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text);">
+        </div>
+      </div>
+      <!-- Actions -->
+      <div style="padding:0 22px 20px;display:flex;gap:8px;">
+        <button id="td-fly-btn" onclick=""
+          style="flex:1;background:#0F4C75;border:none;border-radius:6px;color:#fff;font-size:11px;font-weight:700;padding:10px 0;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:5px;"
+          onmouseover="this.style.background='#1A6FA0'" onmouseout="this.style.background='#0F4C75'"><svg width="14"
+            height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+            <line x1="8" y1="2" x2="8" y2="18" />
+            <line x1="16" y1="6" x2="16" y2="22" />
+          </svg> Fly to Location</button>
+        <button id="td-call-btn" onclick=""
+          style="flex:1;background:rgba(50,224,196,0.12);border:1px solid rgba(50,224,196,0.25);border-radius:6px;color:var(--mint);font-size:11px;font-weight:700;padding:10px 0;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:5px;"
+          onmouseover="this.style.background='rgba(50,224,196,0.2)'"
+          onmouseout="this.style.background='rgba(50,224,196,0.12)'"><svg width="14" height="14" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+          </svg> Call Tourist</button>
+        <button onclick="closeTDCard()"
+          style="flex:0.6;background:transparent;border:1px solid #1A3550;border-radius:6px;color:var(--textMuted);font-size:11px;padding:10px 0;cursor:pointer;">✕
+          Close</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>
+

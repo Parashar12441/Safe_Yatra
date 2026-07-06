@@ -1,0 +1,25 @@
+﻿    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0B0F19;
+      --surface: #121826;
+      --surfaceAlt: #1A2133;
+      --border: #2A3143;
+      --blue: #4D9FFF;
+      --blueMid: #2A75D3;
+      --cyan: #4D9FFF;
+      --mint: #21F3A3;
+      --orange: #FF9F43;
+      --red: #FF3B3B;
+      --redBright: #FF5A5A;
+      --text: #F2F6FF;
+      --textSec: #A8B2C3;
+      --textMuted: #6B7B96;
+    }
+

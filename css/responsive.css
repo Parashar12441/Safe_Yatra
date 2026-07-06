@@ -1,0 +1,1153 @@
+﻿    /* ═══ MOBILE RESPONSIVENESS ═══ */
+
+    /* --- TABLET (1024px) --- */
+    @media (max-width: 1024px) {
+      #lp {
+        width: 280px;
+      }
+
+      #rp {
+        width: 280px;
+      }
+
+      #t-col-right {
+        width: 260px;
+      }
+    }
+
+    /* --- MOBILE (768px) --- */
+    @media (max-width: 768px) {
+
+      /* === GLOBAL MOBILE FIXES === */
+      html,
+      body {
+        overflow: hidden;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button,
+      a,
+      .t-nav-icon,
+      .login-btn,
+      .lf-input,
+      select {
+        min-height: 44px;
+      }
+
+      /* Touch target min */
+
+      .divider {
+        display: none;
+      }
+
+      /* === INTRO SCREEN === */
+      .intro-title-text {
+        font-size: 28px;
+      }
+
+      .intro-subtitle-text {
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        margin-bottom: 24px;
+      }
+
+      .intro-icon-wrap {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 18px;
+      }
+
+      .intro-progress-bar {
+        width: 180px;
+      }
+
+      /* === LOGIN SCREEN === */
+      #login-screen {
+        align-items: flex-start;
+        overflow-y: auto;
+        padding-top: 20px;
+      }
+
+      #login-wrap {
+        width: 100%;
+        max-width: 100%;
+        padding: 20px 16px;
+      }
+
+      #login-header {
+        margin-bottom: 24px;
+      }
+
+      #login-logo {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 12px;
+      }
+
+      #login-title {
+        font-size: 24px;
+      }
+
+      #login-subtitle {
+        font-size: 10px;
+        letter-spacing: 0.1em;
+      }
+
+      #login-ticker {
+        max-width: 100%;
+        font-size: 9px;
+        margin-top: 10px;
+      }
+
+      #login-cards {
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+        padding-bottom: 30px;
+      }
+
+      .login-card {
+        min-width: unset;
+        max-width: 100%;
+        width: 100%;
+        padding: 24px 20px;
+      }
+
+      .lc-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        margin-bottom: 12px;
+      }
+
+      .lc-title {
+        font-size: 16px;
+      }
+
+      .lc-desc {
+        font-size: 10px;
+        margin-bottom: 16px;
+      }
+
+      .lf-input {
+        height: 46px;
+        font-size: 14px;
+        padding: 10px 12px;
+        border-radius: 10px;
+      }
+
+      .login-btn {
+        height: 48px;
+        font-size: 14px;
+        border-radius: 10px;
+      }
+
+      .lc-footer {
+        font-size: 10px;
+      }
+
+      #login-footer {
+        margin-top: 24px;
+      }
+
+      /* Background materials - hide on mobile for performance */
+      .bg-mat {
+        display: none !important;
+      }
+
+      /* === REGISTER SCREENS === */
+      #register-screen,
+      #admin-reg-screen {
+        padding: 16px 0;
+      }
+
+      #reg-wrap,
+      #areg-wrap {
+        width: 100%;
+        max-width: 100%;
+        padding: 20px 16px;
+        overflow-y: auto;
+      }
+
+      #reg-header,
+      #areg-header {
+        margin-bottom: 20px;
+      }
+
+      #reg-title,
+      #areg-title {
+        font-size: 22px;
+      }
+
+      #reg-sub,
+      #areg-sub {
+        font-size: 10px;
+      }
+
+      #reg-card,
+      #areg-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+      }
+
+      .reg-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .upload-zone {
+        min-height: 80px;
+        padding: 14px 12px;
+      }
+
+      .uz-icon {
+        font-size: 24px;
+      }
+
+      .uz-text {
+        font-size: 10px;
+      }
+
+      #reg-back,
+      #areg-back {
+        width: 100%;
+        justify-content: center;
+        margin-top: 14px;
+      }
+
+      /* === BOOT OVERLAY === */
+      #boot-overlay {
+        padding: 20px;
+      }
+
+      #boot-lines {
+        font-size: 9px;
+        max-width: 90vw;
+      }
+
+      #boot-spinner {
+        width: 36px;
+        height: 36px;
+      }
+
+      /* === ADMIN DASHBOARD (#app) === */
+      #app {
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      /* Admin Left Panel - slide in from left */
+      #lp {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        bottom: 0;
+        width: 88%;
+        max-width: 340px;
+        z-index: 10001;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 15px 0 30px rgba(0, 0, 0, 0.6);
+        overflow-y: auto;
+      }
+
+      #lp.mobile-open {
+        left: 0;
+      }
+
+      #logo-bar {
+        padding: 10px 14px;
+      }
+
+      #logo-title {
+        font-size: 15px;
+      }
+
+      #logo-sub {
+        font-size: 9px;
+      }
+
+      #stats-row {
+        padding: 10px 12px;
+        gap: 6px;
+      }
+
+      .sc {
+        padding: 8px 6px;
+      }
+
+      .sc-v {
+        font-size: 18px;
+      }
+
+      .sc-l {
+        font-size: 9px;
+      }
+
+      #tab-hdr {
+        padding: 10px 12px 8px;
+      }
+
+      #tab-body {
+        padding: 10px 12px;
+      }
+
+      #pw-bar {
+        padding: 6px 12px;
+      }
+
+      #ds-box {
+        padding: 6px 12px;
+      }
+
+      /* Admin Right Panel - slide in from right */
+      #rp {
+        position: fixed;
+        right: -100%;
+        top: 0;
+        bottom: 0;
+        width: 88%;
+        max-width: 340px;
+        z-index: 10001;
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -15px 0 30px rgba(0, 0, 0, 0.6);
+      }
+
+      #rp.mobile-open {
+        right: 0;
+      }
+
+      #al-hdr {
+        padding: 10px 12px;
+      }
+
+      #al-feed {
+        padding: 8px 10px;
+      }
+
+      .ac {
+        padding: 9px 10px;
+        margin-bottom: 7px;
+      }
+
+      .ac-a3 {
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+      }
+
+      .ac-a3 .btn-respond {
+        grid-column: 1 / -1;
+      }
+
+      .btn-respond,
+      .btn-locate,
+      .btn-contact,
+      .btn-ack {
+        padding: 8px 0;
+        font-size: 11px;
+        min-height: 36px;
+      }
+
+      #uptime-bar {
+        padding: 5px 12px;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      #sig-log {
+        padding: 4px 12px;
+        height: 24px;
+      }
+
+      #ts {
+        padding: 8px 10px;
+      }
+
+      #rp-foot {
+        padding: 7px 12px;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      /* Center Map - takes full area */
+      #center {
+        flex: 1;
+        min-height: 0;
+      }
+
+      #map-topbar {
+        padding: 8px 12px;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: auto;
+      }
+
+      #tb-left {
+        gap: 8px;
+      }
+
+      #status-text {
+        font-size: 10px;
+      }
+
+      #clock-txt {
+        font-size: 10px;
+      }
+
+      #ticker-wrap {
+        display: none;
+      }
+
+      /* Hide ticker on mobile - saves space */
+      #map-legend {
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .leg-l {
+        font-size: 9px;
+      }
+
+      #sos-map-ct {
+        font-size: 9px;
+        padding: 2px 6px;
+      }
+
+      .map-mode-btn {
+        padding: 4px 8px;
+        font-size: 9px;
+      }
+
+      /* Map overlay elements */
+      #radar-wrap {
+        width: 80px;
+        height: 80px;
+        top: 8px;
+        left: 8px;
+      }
+
+      #wx-panel {
+        bottom: 60px;
+        left: 8px;
+        width: 140px;
+        padding: 8px 10px;
+      }
+
+      .wx-rl {
+        font-size: 9px;
+      }
+
+      /* Floating bubble mobile override */
+      .t-zone-bubble {
+        top: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px 14px;
+        min-width: unset;
+        width: calc(100% - 24px);
+        border-radius: 8px;
+        max-width: unset;
+      }
+
+      .tz-section {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      .tz-divider {
+        width: 100%;
+        height: 1px;
+        margin: 2px 0;
+      }
+
+      .tz-value.ellipsis {
+        white-space: normal;
+      }
+
+      .wx-rv {
+        font-size: 10px;
+      }
+
+      .mc {
+        display: none;
+      }
+
+      /* Hide corner brackets on mobile */
+
+      /* Admin Mobile Toggle Buttons */
+      #admin-mob-btns {
+        display: flex !important;
+      }
+
+      /* === CONTACT MODAL === */
+      #cm-modal {
+        width: 94vw;
+        max-width: 360px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 12px;
+      }
+
+      #cm-hdr {
+        padding: 12px 14px;
+      }
+
+      #cm-name {
+        font-size: 14px;
+      }
+
+      #cm-id {
+        font-size: 10px;
+      }
+
+      #cm-stats {
+        padding: 10px 14px;
+        gap: 8px;
+      }
+
+      #cm-loc {
+        padding: 9px 14px;
+      }
+
+      #cm-wx-row {
+        padding: 9px 14px;
+      }
+
+      #cm-acts {
+        padding: 12px 14px;
+      }
+
+      .cm-grid {
+        gap: 6px;
+      }
+
+      .cm-btn {
+        padding: 10px 8px;
+        font-size: 11px;
+      }
+
+      .cm-bi {
+        font-size: 18px;
+      }
+
+      #cm-note {
+        padding: 9px 10px;
+        font-size: 9px;
+      }
+
+      /* === TOURIST DETAIL CARD === */
+      #td-card {
+        width: 94vw !important;
+        max-width: 380px !important;
+        max-height: 88vh !important;
+        overflow-y: auto !important;
+      }
+
+      /* === TOURIST DASHBOARD === */
+      #tourist-app {
+        height: 100vh;
+        height: 100dvh;
+      }
+
+      /* dvh for mobile address bar */
+
+      /* Tourist Header */
+      #t-header {
+        padding: 8px 12px;
+        gap: 8px;
+      }
+
+      .t-logo {
+        font-size: 14px;
+      }
+
+      .t-role-badge {
+        font-size: 8px;
+        padding: 2px 6px;
+      }
+
+      #t-user-name {
+        display: none;
+      }
+
+      .t-hdr-right {
+        gap: 8px;
+      }
+
+      .t-lang-sel {
+        font-size: 10px;
+        padding: 4px 6px;
+        min-height: 34px;
+      }
+
+      #t-profile-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+        min-height: 34px;
+      }
+
+      #t-logout-btn {
+        padding: 4px 8px;
+        font-size: 9px;
+        min-height: 34px;
+      }
+
+      /* Tourist Nav Sidebar */
+      #t-nav {
+        display: none !important;
+      }
+
+      /* Tourist Left Column Panel - Animated Bottom Sheet for Tools */
+      #t-col-left {
+        display: block !important;
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        bottom: -100% !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: 85vh !important;
+        max-height: 85vh !important;
+        z-index: 10001 !important;
+        transition: bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1) !important;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8) !important;
+        background: rgba(4, 13, 24, 0.96) !important;
+        backdrop-filter: blur(20px) !important;
+        border-top: 1px solid rgba(50, 224, 196, 0.3) !important;
+        border-radius: 24px 24px 0 0 !important;
+        overflow-y: auto !important;
+        padding: 24px 16px !important;
+        padding-bottom: max(100px, env(safe-area-inset-bottom)) !important;
+      }
+
+      #t-col-left.mobile-open {
+        bottom: 0 !important;
+      }
+
+      /* Drag handle indicator for the bottom sheet */
+      #t-col-left::before {
+        content: '' !important;
+        display: block !important;
+        width: 40px !important;
+        height: 4px !important;
+        background: rgba(255, 255, 255, 0.25) !important;
+        border-radius: 2px !important;
+        margin: -12px auto 20px auto !important;
+      }
+
+      /* Force all tools to be visible and stack vertically inside the sliding panel */
+      #t-col-left .t-left-panel {
+        display: block !important;
+        margin-bottom: 20px !important;
+        opacity: 1 !important;
+        animation: none !important;
+      }
+
+      .t-card {
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .t-card-title {
+        font-size: 10px;
+        margin-bottom: 8px;
+      }
+
+      /* Tourist Map Area */
+      #t-col-center {
+        flex: 1;
+      }
+
+      #t-map-container {
+        min-height: 100vh;
+      }
+
+      #t-score-mini {
+        top: auto !important;
+        bottom: 180px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        padding: 8px 12px;
+        border-radius: 10px;
+        gap: 8px;
+        z-index: 10002 !important;
+      }
+
+      #t-score-mini-lbl {
+        font-size: 10px;
+      }
+
+      #t-score-mini-val {
+        font-size: 18px;
+      }
+
+      #t-weather-mini {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        gap: 8px;
+        border-radius: 10px;
+      }
+
+      .wm-icon {
+        font-size: 22px;
+      }
+
+      .wm-temp {
+        font-size: 16px;
+      }
+
+      .wm-cond {
+        font-size: 9px;
+      }
+
+      #t-sat-btn {
+        top: 60px;
+        right: 10px;
+      }
+
+      #t-center-btn {
+        top: 60px;
+        right: 50px;
+      }
+
+      #t-score-overlay {
+        padding: 16px;
+      }
+
+      #t-score-overlay .t-card {
+        width: 95vw;
+        max-width: 95vw;
+      }
+
+      /* Tourist Right Column Panel - Animated Bottom Sheet for Tracking */
+      #t-col-right {
+        display: block !important;
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        bottom: -100% !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: 85vh !important;
+        max-height: 85vh !important;
+        z-index: 10001 !important;
+        transition: bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1) !important;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8) !important;
+        background: rgba(4, 13, 24, 0.96) !important;
+        backdrop-filter: blur(20px) !important;
+        border-top: 1px solid rgba(0, 180, 216, 0.3) !important;
+        border-radius: 24px 24px 0 0 !important;
+        overflow-y: auto !important;
+        padding: 24px 16px !important;
+        padding-bottom: max(100px, env(safe-area-inset-bottom)) !important;
+      }
+
+      #t-col-right.mobile-open {
+        bottom: 0 !important;
+      }
+
+      /* Drag handle indicator for the bottom sheet */
+      #t-col-right::before {
+        content: '' !important;
+        display: block !important;
+        width: 40px !important;
+        height: 4px !important;
+        background: rgba(255, 255, 255, 0.25) !important;
+        border-radius: 2px !important;
+        margin: -12px auto 20px auto !important;
+      }
+
+      /* Allow GPS log to scroll within the sheet if needed */
+      #gps-log {
+        max-height: 120px !important;
+      }
+
+      /* Tourist Mobile Toggle Buttons */
+      #t-mob-btns {
+        display: flex !important;
+      }
+
+      /* SOS button mobile */
+      #t-sos-btn {
+        width: 80px;
+        height: 80px;
+        font-size: 20px;
+      }
+
+      .t-sos-ring {
+        inset: -6px;
+      }
+
+      /* Geofence panel */
+      #t-geofence-panel {
+        max-height: 120px;
+        padding: 8px 10px;
+      }
+
+      /* GPS tracker card */
+      .t-dev-grid {
+        gap: 4px;
+      }
+
+      .t-dev-item {
+        padding: 6px 8px;
+      }
+
+      .t-dev-val {
+        font-size: 12px;
+      }
+
+      /* Weather grid */
+      .t-wx-grid {
+        gap: 4px;
+      }
+
+      .t-wx-item {
+        padding: 6px 8px;
+      }
+
+      .t-wx-val {
+        font-size: 12px;
+      }
+
+      #t-wx-main {
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      /* Score gauge */
+      #t-score-wrap {
+        width: 130px;
+        height: 130px;
+      }
+
+      #t-score-grade {
+        font-size: 28px;
+      }
+
+      #t-score-val {
+        font-size: 10px;
+      }
+
+      /* News items */
+      .t-news-item {
+        padding: 6px 8px;
+        margin-bottom: 4px;
+      }
+
+      .t-news-hl {
+        font-size: 10px;
+      }
+
+      /* Safety factors */
+      .t-sf {
+        font-size: 10px;
+        padding: 3px 0;
+      }
+
+      /* === PROFILE MODAL === */
+      #profile-modal {
+        right: 8px !important;
+        left: 8px !important;
+        top: auto !important;
+        bottom: 20px !important;
+        min-width: unset !important;
+        max-width: calc(100vw - 16px) !important;
+        border-radius: 12px !important;
+      }
+
+      /* Hide "NAV PANEL" vertical text on mobile */
+      #t-nav>div[style*="writing-mode"] {
+        display: none !important;
+      }
+    }
+
+    /* --- SMALL PHONES (480px) --- */
+    @media (max-width: 480px) {
+
+      /* Login */
+      #login-title {
+        font-size: 20px;
+      }
+
+      #login-logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .login-card {
+        padding: 20px 16px;
+      }
+
+      .lc-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .lc-title {
+        font-size: 15px;
+      }
+
+      /* Register */
+      #reg-title,
+      #areg-title {
+        font-size: 20px;
+      }
+
+      #reg-card,
+      #areg-card {
+        padding: 16px 12px;
+      }
+
+      /* Admin */
+      #lp,
+      #rp {
+        width: 92%;
+        max-width: none;
+      }
+
+      .sc-v {
+        font-size: 16px;
+      }
+
+      /* Tourist nav */
+      #t-nav {
+        width: 48px;
+      }
+
+      .t-nav-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+
+      .t-nav-label {
+        display: none;
+      }
+
+      /* Hide labels on very small screens */
+      #t-col-left {
+        left: 48px;
+        width: calc(100vw - 48px);
+      }
+
+      /* Tourist header */
+      .t-logo {
+        font-size: 13px;
+      }
+
+      .t-role-badge {
+        display: none;
+      }
+
+      /* Map controls */
+      #t-score-mini {
+        padding: 6px 10px;
+      }
+
+      #t-score-mini-lbl {
+        font-size: 9px;
+      }
+
+      #t-score-mini-val {
+        font-size: 16px;
+      }
+
+      #t-weather-mini {
+        padding: 4px 8px;
+      }
+
+      .wm-icon {
+        font-size: 18px;
+      }
+
+      .wm-temp {
+        font-size: 14px;
+      }
+
+      /* Contact modal */
+      #cm-modal {
+        width: 97vw;
+      }
+
+      /* Forecast */
+      .t-fc-item {
+        min-width: 50px;
+        padding: 6px 4px;
+      }
+
+      .t-fc-icon {
+        font-size: 16px;
+      }
+
+      .t-fc-temp {
+        font-size: 10px;
+      }
+    }
+
+    /* --- VERY SMALL PHONES (360px) --- */
+    @media (max-width: 360px) {
+      #login-title {
+        font-size: 18px;
+      }
+
+      .login-card {
+        padding: 16px 12px;
+      }
+
+      .lf-input {
+        height: 42px;
+        font-size: 13px;
+      }
+
+      .login-btn {
+        height: 44px;
+        font-size: 13px;
+      }
+
+      #t-header {
+        padding: 6px 8px;
+      }
+
+      .t-logo {
+        font-size: 12px;
+      }
+
+      .t-hdr-right {
+        gap: 4px;
+      }
+
+      .t-lang-sel {
+        font-size: 9px;
+        padding: 2px 4px;
+      }
+
+      #t-logout-btn {
+        padding: 3px 6px;
+        font-size: 8px;
+      }
+    }
+
+    /* --- LANDSCAPE MOBILE --- */
+    @media (max-width: 768px) and (max-height: 500px) {
+      #login-screen {
+        padding-top: 10px;
+      }
+
+      #login-header {
+        margin-bottom: 12px;
+      }
+
+      #login-logo {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 6px;
+      }
+
+      #login-title {
+        font-size: 20px;
+      }
+
+      #login-subtitle {
+        margin-top: 2px;
+      }
+
+      #login-ticker {
+        display: none;
+      }
+
+      #login-cards {
+        gap: 12px;
+        flex-direction: row;
+      }
+
+      .login-card {
+        padding: 16px 14px;
+        min-width: 240px;
+      }
+
+      .lc-icon {
+        margin-bottom: 8px;
+      }
+
+      .lc-desc {
+        margin-bottom: 12px;
+        font-size: 9px;
+      }
+
+      #login-footer {
+        margin-top: 12px;
+      }
+
+      .intro-title-text {
+        font-size: 24px;
+      }
+
+      .intro-subtitle-text {
+        margin-bottom: 16px;
+        font-size: 9px;
+      }
+
+      /* Tourist dashboard landscape */
+      #t-col-right.mobile-open {
+        max-height: 60vh;
+      }
+    }
+
+    /* --- SHORT HEIGHT SCREENS --- */
+    @media (max-height: 600px) {
+      .intro-subtitle-text {
+        margin-bottom: 20px;
+      }
+
+      #login-wrap {
+        padding: 16px;
+      }
+
+      #login-header {
+        margin-bottom: 16px;
+      }
+
+      #login-logo {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 8px;
+      }
+
+      .login-card {
+        padding: 18px 14px;
+      }
+    }
+
+    /* --- SAFE AREA (iPhone notch/island) --- */
+    @supports (padding: env(safe-area-inset-top)) {
+      @media (max-width: 768px) {
+        #t-header {
+          padding-top: max(8px, env(safe-area-inset-top));
+        }
+
+        #map-topbar {
+          padding-top: max(8px, env(safe-area-inset-top));
+        }
+
+        #admin-mob-btns {
+          padding-bottom: max(24px, env(safe-area-inset-bottom));
+        }
+
+        #t-col-right {
+          padding-bottom: max(20px, env(safe-area-inset-bottom));
+        }
+
+        #login-screen {
+          padding-top: max(20px, env(safe-area-inset-top));
+        }
+      }
+    }
+

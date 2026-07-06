@@ -1,0 +1,48 @@
+﻿    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+      font-size: 13px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--textMuted);
+    }
+
+    select option {
+      background: var(--surfaceAlt);
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+

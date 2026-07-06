@@ -1,0 +1,327 @@
+﻿    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: .9;
+      }
+
+      50% {
+        opacity: .3;
+      }
+    }
+
+    @keyframes sos-ring {
+      0% {
+        transform: scale(1);
+        opacity: .7;
+      }
+
+      100% {
+        transform: scale(3.5);
+        opacity: 0;
+      }
+    }
+
+    @keyframes sos-pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: .9;
+      }
+
+      50% {
+        transform: scale(1.55);
+        opacity: .4;
+      }
+    }
+
+    @keyframes t-ring {
+      0% {
+        transform: scale(1);
+        opacity: .6;
+      }
+
+      100% {
+        transform: scale(2.8);
+        opacity: 0;
+      }
+    }
+
+    @keyframes pin-drop {
+      0% {
+        transform: translateY(-60px) scale(.6);
+        opacity: 0;
+      }
+
+      55% {
+        transform: translateY(6px) scale(1.08);
+        opacity: 1;
+      }
+
+      75% {
+        transform: translateY(-4px) scale(.97);
+      }
+
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes pin-ripple {
+      0% {
+        transform: scale(0);
+        opacity: .8;
+      }
+
+      100% {
+        transform: scale(3.5);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ch-spin {
+      from {
+        transform: translate(-50%, -50%) rotate(0);
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #boot-text {
+      font-size: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--cyan);
+      letter-spacing: .06em;
+    }
+
+    #boot-lines {
+      font-size: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--textMuted);
+      text-align: center;
+      line-height: 2;
+      max-width: 350px;
+    }
+
+    /* ═══ INTRO ANIMATION ═══ */
+    #intro-screen-anim {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      background: #05101F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    .intro-bg-gradient {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(15, 76, 117, 0.4) 0%, transparent 60%);
+      animation: introPulse 2s ease-in-out infinite alternate;
+    }
+
+    .intro-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .intro-icon-wrap {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 24px;
+      animation: introFloat 2s ease-in-out infinite alternate, introFadeInUp 0.8s ease-out;
+    }
+
+    .intro-icon {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 16px rgba(0, 180, 216, 0.5));
+    }
+
+    .intro-title-text {
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      animation: introFadeInUp 1s ease-out;
+    }
+
+    .intro-title-text span {
+      color: var(--cyan);
+    }
+
+    .intro-subtitle-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--mint);
+      letter-spacing: 0.2em;
+      margin-bottom: 40px;
+      animation: introFadeInUp 1.2s ease-out;
+    }
+
+    .intro-progress-bar {
+      width: 240px;
+      height: 4px;
+      background: var(--surfaceAlt);
+      border-radius: 2px;
+      overflow: hidden;
+      animation: introFadeInUp 1.4s ease-out;
+    }
+
+    .intro-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--mint));
+      width: 0%;
+      animation: introLoadBar 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes introFloat {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-12px);
+      }
+    }
+
+    @keyframes introPulse {
+      0% {
+        opacity: 0.5;
+        transform: scale(0.9);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes introFadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes introLoadBar {
+      0% {
+        width: 0%;
+      }
+
+      40% {
+        width: 45%;
+      }
+
+      80% {
+        width: 80%;
+      }
+
+      100% {
+        width: 100%;
+      }
+    }
+
+    #intro-screen-anim.hide {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    @keyframes locPulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+
+      70% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+
+    @keyframes t-ring {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: scale(2.4);
+        opacity: 0;
+      }
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    /* ── GPS Radar Sweep Animation ── */
+    @keyframes gpsSweep {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes gpsSweepFade {
+      0% {
+        opacity: 0.55;
+      }
+
+      50% {
+        opacity: 0.25;
+      }
+
+      100% {
+        opacity: 0.55;
+      }
+    }
+
+    @keyframes gpsRipple {
+      0% {
+        transform: scale(0.6);
+        opacity: 0.6;
+      }
+
+      100% {
+        transform: scale(2.8);
+        opacity: 0;
+      }
+    }

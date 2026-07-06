@@ -1,0 +1,27 @@
+﻿    /* MAP MODE TOGGLE */
+    .map-mode-btn {
+      background: var(--surfaceAlt);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--textSec);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 5px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .map-mode-btn:hover {
+      border-color: var(--cyan);
+      color: var(--text);
+    }
+
+    .map-mode-btn.active {
+      background: var(--blueMid);
+      border-color: var(--cyan);
+      color: #fff;
+    }
+
