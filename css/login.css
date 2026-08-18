@@ -7,7 +7,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
       transition: opacity .6s, transform .6s;
     }
 
@@ -18,18 +19,18 @@
     }
 
     #login-bg-grid {
-      position: absolute;
+      position: fixed;
       inset: 0;
       background-image: linear-gradient(rgba(0, 180, 216, .03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 180, 216, .03) 1px, transparent 1px);
       background-size: 60px 60px;
     }
 
     #login-bg-glow {
-      position: absolute;
+      position: fixed;
       top: 50%;
-      left: 50%;
-      width: 700px;
-      height: 700px;
+      left: 25%;
+      width: 900px;
+      height: 900px;
       transform: translate(-50%, -50%);
       border-radius: 50%;
       background: radial-gradient(circle, rgba(15, 76, 117, .25) 0%, rgba(0, 180, 216, .08) 35%, transparent 70%);
@@ -50,7 +51,7 @@
     }
 
     #login-scan {
-      position: absolute;
+      position: fixed;
       left: 0;
       right: 0;
       height: 1px;
@@ -63,31 +64,45 @@
       position: relative;
       z-index: 2;
       width: 100%;
-      max-width: 860px;
-      padding: 0 24px;
+      max-width: 1100px;
+      padding: 0 40px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 80px;
     }
 
     #login-header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     #login-logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
+      width: 96px;
+      height: 96px;
+      border-radius: 20px;
       background: linear-gradient(135deg, var(--blue), var(--blueMid));
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 16px;
-      box-shadow: 0 8px 32px rgba(0, 180, 216, .3);
+      margin-bottom: 24px;
+      box-shadow: 0 12px 36px rgba(0, 180, 216, .4);
+    }
+
+    #login-logo svg {
+      width: 48px !important;
+      height: 48px !important;
     }
 
     #login-title {
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -.02em;
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -.03em;
     }
 
     #login-title span {
@@ -95,16 +110,18 @@
     }
 
     #login-subtitle {
-      font-size: 12px;
+      font-size: 15px;
       color: var(--textMuted);
-      letter-spacing: .18em;
+      letter-spacing: .2em;
       text-transform: uppercase;
-      margin-top: 6px;
+      margin-top: 8px;
+      line-height: 1.4;
     }
 
     #login-cards {
       display: flex;
-      justify-content: center;
+      flex: 1;
+      justify-content: flex-end;
     }
 
     .login-card {
@@ -1009,7 +1026,7 @@
 
     /* BACKGROUND THEMATIC MATERIALS */
     .bg-mat {
-      position: absolute;
+      position: fixed;
       pointer-events: none;
       z-index: 1;
     }

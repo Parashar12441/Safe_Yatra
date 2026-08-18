@@ -1,4 +1,4 @@
-﻿    /* ═══ MOBILE RESPONSIVENESS ═══ */
+    /* ═══ MOBILE RESPONSIVENESS ═══ */
 
     /* --- TABLET (1024px) --- */
     @media (max-width: 1024px) {
@@ -76,16 +76,25 @@
         width: 100%;
         max-width: 100%;
         padding: 20px 16px;
+        flex-direction: column;
+        gap: 20px;
       }
 
       #login-header {
         margin-bottom: 24px;
+        text-align: center;
+        align-items: center;
       }
 
       #login-logo {
         width: 48px;
         height: 48px;
         margin-bottom: 12px;
+      }
+
+      #login-logo svg {
+        width: 24px !important;
+        height: 24px !important;
       }
 
       #login-title {
