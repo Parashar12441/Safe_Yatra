@@ -1161,7 +1161,6 @@
       const pass = document.getElementById('reg-pass').value;
       const pass2 = document.getElementById('reg-pass2').value;
       const emergency = document.getElementById('reg-emergency').value.trim();
-      const aadharFile = document.getElementById('reg-aadhar').files[0];
       const err = document.getElementById('reg-error');
       err.textContent = '';
       if (!name) { err.textContent = '⚠ Please enter your full name'; return false; }
@@ -1183,15 +1182,8 @@
         })
         .then(cred => {
           userCred = cred;
-          if (aadharFile) {
-            const ext = aadharFile.name.split('.').pop();
-            const fileName = `aadhar_${Date.now()}.${ext}`;
-            const storageRef = storage.ref(`tourist_docs/${cred.user.uid}/${fileName}`);
-            return storageRef.put(aadharFile).then(snap => snap.ref.getDownloadURL());
-          }
-          return null;
         })
-        .then(downloadURL => {
+        .then(() => {
           // Store profile in Firestore
           const profileData = {
             name: name,
@@ -1201,7 +1193,6 @@
             role: 'tourist',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           };
-          if (downloadURL) profileData.aadharDocUrl = downloadURL;
           return db.collection('users').doc(userCred.user.uid).set(profileData, { merge: true });
         })
         .then(() => {
@@ -1225,6 +1216,41 @@
         });
       return false;
     }
+    window.handleGoogleLogin = function() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(cred => {
+          // Check role from Firestore
+          return db.collection('users').doc(cred.user.uid).get().then(doc => {
+            if (!doc.exists) {
+              const profileData = {
+                name: cred.user.displayName,
+                email: cred.user.email,
+                role: 'tourist',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              };
+              return db.collection('users').doc(cred.user.uid).set(profileData, { merge: true })
+                .then(() => profileData);
+            }
+            return doc.data();
+          });
+        })
+        .then(data => {
+          window.loggedInProfile = data;
+          window.loggedInName = data.name || data.email;
+          loggedInRole = 'user';
+          localStorage.setItem('syRole', 'user');
+          startBoot('user');
+        })
+        .catch(error => {
+          console.error("Google login error", error);
+          const errEl = document.getElementById('user-error');
+          if (errEl) {
+             errEl.textContent = '⚠ Google Login Failed: ' + error.message;
+          }
+        });
+    };
+
     function handleLogin(e, role) {
       e.preventDefault();
       const uId = role === 'cmd' ? 'cmd-user' : 'user-user';

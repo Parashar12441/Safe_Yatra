@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -196,6 +196,12 @@
               </div>
               <div class="lf-error" id="user-error"></div>
               <button type="submit" class="login-btn btn-user">🧭 Login as Tourist</button>
+              
+              <div class="login-divider">OR</div>
+              <button type="button" class="login-btn btn-google" onclick="handleGoogleLogin()">
+                <img src="https://www.google.com/favicon.ico" alt="Google Logo" style="width: 20px; height: 20px;">
+                Sign in with Google
+              </button>
             </form>
             <div class="lc-footer">New user? <a href="#" onclick="showRegister();return false;">Register here</a> · <a
                 href="#">Resend OTP</a></div>
@@ -250,19 +256,6 @@
           <div class="lf-group">
             <label class="lf-label">Emergency Contact Name & Number</label>
             <input class="lf-input" id="reg-emergency" type="text" placeholder="e.g. Rahul Sharma — +91 99887 76655" />
-          </div>
-          <div class="areg-sec-label">📷 Identity Verification Documents</div>
-          <div class="lf-group">
-            <label class="lf-label">Aadhaar Card</label>
-            <div class="upload-zone" id="uz-tourist-aadhaar" onclick="document.getElementById('reg-aadhar').click()"
-              ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)"
-              ondrop="uzDrop(event,this,'reg-aadhar')">
-              <input type="file" id="reg-aadhar" accept="image/*,.pdf" style="display:none"
-                onchange="uzFileSelected(this,'uz-tourist-aadhaar')">
-              <span class="uz-icon">🇮🇳</span>
-              <span class="uz-text"><b>Click or drag</b> to upload<br />your Aadhaar Card</span>
-              <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
-            </div>
           </div>
           <div class="reg-divider"></div>
           <div class="reg-row">

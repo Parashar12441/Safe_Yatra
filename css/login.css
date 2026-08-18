@@ -1,4 +1,4 @@
-﻿    /* ═══ LOGIN PAGE ═══ */
+    /* ═══ LOGIN PAGE ═══ */
     #login-screen {
       position: fixed;
       inset: 0;
@@ -360,6 +360,42 @@
     .btn-user:hover {
       box-shadow: 0 6px 24px rgba(50, 224, 196, .45);
     }
+
+    .btn-google {
+      background: #fff;
+      color: #444;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-google:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background: #f9f9f9;
+    }
+
+    .login-divider {
+      text-align: center;
+      margin: 15px 0;
+      color: #999;
+      font-size: 0.85rem;
+      position: relative;
+    }
+
+    .login-divider::before, .login-divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #eee;
+    }
+
+    .login-divider::before { left: 0; }
+    .login-divider::after { right: 0; }
 
     .lf-error {
       font-size: 10px;
