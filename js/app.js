@@ -1168,7 +1168,10 @@
       btn.disabled = true; btn.textContent = 'Creating account…';
 
       let userCred;
-      auth.createUserWithEmailAndPassword(email, pass)
+      // Sign out any existing session first to avoid conflicts
+      const preSignOut = auth.currentUser ? auth.signOut() : Promise.resolve();
+      preSignOut
+        .then(() => auth.createUserWithEmailAndPassword(email, pass))
         .then(cred => {
           userCred = cred;
         })
@@ -1194,12 +1197,14 @@
           document.getElementById('reg-back').style.display = 'none';
         })
         .catch(error => {
+          console.error('Register error:', error.code, error.message);
           btn.disabled = false; btn.textContent = '✓ Create Account';
           const msg = {
             'auth/email-already-in-use': 'This email is already registered. Please log in instead.',
             'auth/invalid-credential': 'Invalid email or password. If already registered, please log in.',
             'auth/invalid-email': 'Please enter a valid email address.',
             'auth/weak-password': 'Password is too weak. Use at least 6 characters.',
+            'auth/operation-not-allowed': 'Email/Password sign-in is not enabled. Please enable it in Firebase Console → Authentication → Sign-in method.',
             'permission-denied': 'Firebase Permission Denied. You need to update your Firestore Rules in the Firebase Console to "allow read, write: if true;"'
           }[error.code] || (error.message.includes('Missing or insufficient') ? 'Firebase Rules Error: Please go to Firebase Console → Firestore Database → Rules, and set "allow read, write: if true;"' : error.message);
           err.textContent = '⚠ ' + msg;
