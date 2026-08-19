@@ -1648,9 +1648,9 @@
               histContainer.innerHTML = '<div class="t-gf-empty">No alerts recorded yet</div>';
               if (sosBtn) {
                 sosBtn.style.background = '';
-                sosBtn.onclick = triggerSOS;
+                sosBtn.removeAttribute('data-sos-blocked');
               }
-              if (sosStatus) sosStatus.innerHTML = 'Press for emergency alert';
+              if (sosStatus) sosStatus.innerHTML = 'Hold 3s or triple-tap for emergency alert';
               return;
             }
 
@@ -1687,15 +1687,15 @@
             if (hasActiveSOS) {
               if (sosBtn) {
                 sosBtn.style.background = 'linear-gradient(135deg,#8B0000,#D80032)';
-                sosBtn.onclick = () => alert('SOS is already active. Help is on the way.');
+                sosBtn.setAttribute('data-sos-blocked', 'true');
               }
               if (sosStatus) sosStatus.innerHTML = '<b style="color:var(--red)">🚨 SOS ACTIVE — Police notified</b>';
             } else {
               if (sosBtn) {
                 sosBtn.style.background = '';
-                sosBtn.onclick = triggerSOS;
+                sosBtn.removeAttribute('data-sos-blocked');
               }
-              if (sosStatus) sosStatus.innerHTML = 'Press for emergency alert';
+              if (sosStatus) sosStatus.innerHTML = 'Hold 3s or triple-tap for emergency alert';
             }
           });
       }
@@ -2281,9 +2281,176 @@
       }
     }
 
-    function triggerSOS() {
-      if (!confirm('🆘 EMERGENCY SOS\n\nThis will alert the nearest police station and your emergency contacts.\n\nAre you sure?')) return;
+    // ═══ SOS PRESS-AND-HOLD / TRIPLE-TAP ENGINE ═══════════════════════════════
+    // Vibration helper (safe for browsers that don't support it)
+    function sosVibrate(pattern) {
+      if (navigator.vibrate) {
+        navigator.vibrate(pattern);
+      }
+    }
 
+    // SOS hold state
+    let _sosHoldTimer = null;
+    let _sosHoldStart = 0;
+    let _sosHoldRAF = null;
+    let _sosHoldVibInterval = null;
+    const SOS_HOLD_DURATION = 3000; // 3 seconds
+    const SOS_PROGRESS_CIRCUMFERENCE = 339.292; // 2 * PI * 54
+
+    // Triple-tap state
+    let _sosTapTimes = [];
+    const SOS_TAP_WINDOW = 600; // ms window for 3 taps
+    const SOS_TAP_COUNT = 3;
+
+    function initSOSButton() {
+      const btn = document.getElementById('t-sos-btn');
+      if (!btn) return;
+
+      // ── Press & Hold (touch + mouse) ──
+      function onHoldStart(e) {
+        // Prevent default to avoid ghost clicks on touch
+        if (e.type === 'touchstart') e.preventDefault();
+
+        // Don't start hold if SOS is already active
+        if (btn.getAttribute('data-sos-blocked') === 'true') {
+          showToast('🚨 SOS is already active. Help is on the way.');
+          return;
+        }
+
+        _sosHoldStart = Date.now();
+
+        // Add holding class for visual feedback
+        btn.classList.add('sos-holding');
+
+        // Initial vibration pulse
+        sosVibrate(50);
+
+        // Periodic vibration pulses every second while holding
+        let vibCount = 0;
+        _sosHoldVibInterval = setInterval(() => {
+          vibCount++;
+          // Escalating vibration: 50ms → 80ms → 120ms
+          sosVibrate(50 + vibCount * 30);
+        }, 1000);
+
+        // Animate the progress ring
+        const progressFill = document.getElementById('t-sos-progress-fill');
+        const statusEl = document.getElementById('t-sos-status');
+
+        function animateProgress() {
+          const elapsed = Date.now() - _sosHoldStart;
+          const progress = Math.min(elapsed / SOS_HOLD_DURATION, 1);
+
+          if (progressFill) {
+            progressFill.style.strokeDashoffset = SOS_PROGRESS_CIRCUMFERENCE * (1 - progress);
+          }
+
+          // Update countdown text
+          const remaining = Math.ceil((SOS_HOLD_DURATION - elapsed) / 1000);
+          if (statusEl && remaining > 0) {
+            statusEl.innerHTML = `<b style="color:var(--orange)">Hold ${remaining}s more...</b>`;
+          }
+
+          if (progress >= 1) {
+            // Hold completed — trigger SOS!
+            clearInterval(_sosHoldVibInterval);
+            _sosHoldVibInterval = null;
+            btn.classList.remove('sos-holding');
+            btn.classList.add('sos-triggered');
+            setTimeout(() => btn.classList.remove('sos-triggered'), 500);
+
+            // Strong vibration burst on activation
+            sosVibrate([200, 100, 200, 100, 400]);
+
+            resetProgressRing();
+            triggerSOS();
+            return;
+          }
+
+          _sosHoldRAF = requestAnimationFrame(animateProgress);
+        }
+
+        _sosHoldRAF = requestAnimationFrame(animateProgress);
+      }
+
+      function onHoldEnd(e) {
+        if (_sosHoldStart === 0) return;
+
+        const elapsed = Date.now() - _sosHoldStart;
+        _sosHoldStart = 0;
+
+        // Cancel hold animation
+        if (_sosHoldRAF) {
+          cancelAnimationFrame(_sosHoldRAF);
+          _sosHoldRAF = null;
+        }
+        if (_sosHoldVibInterval) {
+          clearInterval(_sosHoldVibInterval);
+          _sosHoldVibInterval = null;
+        }
+
+        btn.classList.remove('sos-holding');
+        resetProgressRing();
+
+        // If hold was too short, update status to guide the user
+        if (elapsed < SOS_HOLD_DURATION) {
+          const statusEl = document.getElementById('t-sos-status');
+          if (statusEl) {
+            statusEl.innerHTML = 'Hold 3s or triple-tap for emergency alert';
+          }
+          // Stop residual vibration
+          sosVibrate(0);
+        }
+      }
+
+      function resetProgressRing() {
+        const progressFill = document.getElementById('t-sos-progress-fill');
+        if (progressFill) {
+          progressFill.style.strokeDashoffset = SOS_PROGRESS_CIRCUMFERENCE;
+        }
+      }
+
+      // Touch events (mobile)
+      btn.addEventListener('touchstart', onHoldStart, { passive: false });
+      btn.addEventListener('touchend', onHoldEnd);
+      btn.addEventListener('touchcancel', onHoldEnd);
+
+      // Mouse events (desktop)
+      btn.addEventListener('mousedown', onHoldStart);
+      btn.addEventListener('mouseup', onHoldEnd);
+      btn.addEventListener('mouseleave', onHoldEnd);
+
+      // ── Triple-tap ──
+      btn.addEventListener('click', (e) => {
+        const now = Date.now();
+        _sosTapTimes.push(now);
+
+        // Only keep taps within the time window
+        _sosTapTimes = _sosTapTimes.filter(t => now - t < SOS_TAP_WINDOW);
+
+        if (_sosTapTimes.length >= SOS_TAP_COUNT) {
+          _sosTapTimes = [];
+          sosVibrate([200, 100, 200, 100, 400]);
+          btn.classList.add('sos-triggered');
+          setTimeout(() => btn.classList.remove('sos-triggered'), 500);
+          triggerSOS();
+        }
+      });
+    }
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', initSOSButton);
+    // Also try immediately in case DOMContentLoaded already fired
+    if (document.readyState !== 'loading') {
+      setTimeout(initSOSButton, 0);
+    }
+
+    function triggerSOS() {
+      const btn = document.getElementById('t-sos-btn');
+      if (btn && btn.getAttribute('data-sos-blocked') === 'true') {
+        showToast('🚨 SOS is already active. Help is on the way.');
+        return;
+      }
       const loc = tUserLoc ? `${tUserLoc.lat.toFixed(5)}, ${tUserLoc.lng.toFixed(5)}` : 'GPS unavailable';
       document.getElementById('t-sos-status').innerHTML = '<b style="color:var(--red)">🚨 SOS ACTIVE — Police notified</b>';
       document.getElementById('t-sos-btn').style.background = 'linear-gradient(135deg,#8B0000,#D80032)';

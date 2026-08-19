@@ -1080,12 +1080,17 @@
         <!-- SOS PANIC BUTTON -->
         <div class="t-card" id="t-sos-card">
           <div class="t-card-title">🆘 <span data-i18n="emergency">Emergency SOS</span></div>
-          <button id="t-sos-btn" onclick="triggerSOS()">
+          <button id="t-sos-btn">
             <div class="t-sos-ring"></div>
+            <!-- Hold progress ring -->
+            <svg class="t-sos-progress" viewBox="0 0 120 120">
+              <circle class="t-sos-progress-track" cx="60" cy="60" r="54"/>
+              <circle class="t-sos-progress-fill" id="t-sos-progress-fill" cx="60" cy="60" r="54"/>
+            </svg>
             <span>SOS</span>
           </button>
-          <div id="t-sos-status" style="font-size:10px;color:var(--textMuted);text-align:center;margin-top:8px">Press
-            for emergency alert</div>
+          <div id="t-sos-status" style="font-size:10px;color:var(--textMuted);text-align:center;margin-top:8px">
+            Hold 3s or triple-tap for emergency alert</div>
         </div>
 
         <!-- ALERT HISTORY -->
