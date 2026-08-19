@@ -1118,27 +1118,36 @@
       prog.classList.add('show');
       pfill.style.width = '10%'; ptxt.textContent = 'Creating secure account…';
 
-      function uploadFile(ref, file, label) {
-        return new Promise((resolve, reject) => {
-          const task = ref.put(file);
-          const timeout = setTimeout(() => { task.cancel(); reject(new Error(label + ' upload timed out. Check Firebase Storage setup.')); }, 60000);
-          task.on('state_changed',
-            snap => { const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100); ptxt.textContent = 'Uploading ' + label + '… ' + pct + '%'; },
-            error => { clearTimeout(timeout); reject(error); },
-            () => { clearTimeout(timeout); task.snapshot.ref.getDownloadURL().then(resolve).catch(reject); }
-          );
-        });
+      async function uploadFileSupabase(file, filePath, label) {
+        ptxt.textContent = 'Uploading ' + label + '…';
+        const { data, error } = await supabase
+          .storage
+          .from('admin-docs')
+          .upload(filePath, file, { cacheControl: '3600', upsert: true });
+
+        if (error) {
+          throw new Error(`${label} upload failed: ${error.message}`);
+        }
+
+        const { data: publicData } = supabase
+          .storage
+          .from('admin-docs')
+          .getPublicUrl(filePath);
+
+        return publicData.publicUrl;
       }
 
       auth.createUserWithEmailAndPassword(email, pass)
         .then(cred => {
           const uid = cred.user.uid;
-          pfill.style.width = '25%'; ptxt.textContent = 'Uploading ID card…';
-          const idRef = storage.ref('admin-verification/' + uid + '/id-card/' + idFile.name);
-          const aadhaarRef = storage.ref('admin-verification/' + uid + '/aadhaar/' + aadhaarFile.name);
-          return uploadFile(idRef, idFile, 'ID card').then(idURL => {
+          pfill.style.width = '25%'; 
+          
+          const idFilePath = `admin-verification/${uid}/id-card_${idFile.name}`;
+          const aadhaarFilePath = `admin-verification/${uid}/aadhaar_${aadhaarFile.name}`;
+          
+          return uploadFileSupabase(idFile, idFilePath, 'ID card').then(idURL => {
             pfill.style.width = '55%';
-            return uploadFile(aadhaarRef, aadhaarFile, 'Aadhaar card').then(aadhaarURL => ({ uid, idURL, aadhaarURL }));
+            return uploadFileSupabase(aadhaarFile, aadhaarFilePath, 'Aadhaar card').then(aadhaarURL => ({ uid, idURL, aadhaarURL }));
           });
         })
         .then(({ uid, idURL, aadhaarURL }) => {
@@ -2312,8 +2321,13 @@
     // ═══ SOS PRESS-AND-HOLD / TRIPLE-TAP ENGINE ═══════════════════════════════
     // Vibration helper (safe for browsers that don't support it)
     function sosVibrate(pattern) {
-      if (navigator.vibrate) {
-        navigator.vibrate(pattern);
+      const vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+      if (vibrate) {
+        try {
+          vibrate.call(navigator, pattern);
+        } catch (e) {
+          console.warn("Vibration API blocked or failed:", e);
+        }
       }
     }
 
