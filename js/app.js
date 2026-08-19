@@ -1120,7 +1120,7 @@
 
       async function uploadFileSupabase(file, filePath, label) {
         ptxt.textContent = 'Uploading ' + label + '…';
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
           .storage
           .from('admin-docs')
           .upload(filePath, file, { cacheControl: '3600', upsert: true });
@@ -1129,7 +1129,7 @@
           throw new Error(`${label} upload failed: ${error.message}`);
         }
 
-        const { data: publicData } = supabase
+        const { data: publicData } = await supabaseClient
           .storage
           .from('admin-docs')
           .getPublicUrl(filePath);

@@ -21,4 +21,4 @@ const storage = firebase.storage();
 const SUPABASE_URL = "https://juwquonefwyexclbtxqa.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable__siVejaDY-hYof1zsUBMog_Zyvrz2kI";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
