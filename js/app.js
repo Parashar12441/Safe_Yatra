@@ -1098,12 +1098,6 @@
       }
 
       auth.createUserWithEmailAndPassword(email, pass)
-        .catch(error => {
-          if (error.code === 'auth/email-already-in-use') {
-            return auth.signInWithEmailAndPassword(email, pass);
-          }
-          throw error;
-        })
         .then(cred => {
           const uid = cred.user.uid;
           pfill.style.width = '25%'; ptxt.textContent = 'Uploading ID card…';
@@ -1141,7 +1135,8 @@
           prog.classList.remove('show');
           console.error('Admin register error:', error);
           const msg = {
-            'auth/email-already-in-use': 'This email is already registered.',
+            'auth/email-already-in-use': 'This email is already registered. Please log in instead.',
+            'auth/invalid-credential': 'Invalid email or password. If already registered, please log in.',
             'auth/invalid-email': 'Please enter a valid email address.',
             'auth/weak-password': 'Password too weak. Use at least 6 characters.',
             'storage/unauthorized': 'Storage permission denied. Enable Firebase Storage in the console.',
@@ -1174,12 +1169,6 @@
 
       let userCred;
       auth.createUserWithEmailAndPassword(email, pass)
-        .catch(error => {
-          if (error.code === 'auth/email-already-in-use') {
-            return auth.signInWithEmailAndPassword(email, pass);
-          }
-          throw error;
-        })
         .then(cred => {
           userCred = cred;
         })
@@ -1207,7 +1196,8 @@
         .catch(error => {
           btn.disabled = false; btn.textContent = '✓ Create Account';
           const msg = {
-            'auth/email-already-in-use': 'This email is already registered. Try logging in.',
+            'auth/email-already-in-use': 'This email is already registered. Please log in instead.',
+            'auth/invalid-credential': 'Invalid email or password. If already registered, please log in.',
             'auth/invalid-email': 'Please enter a valid email address.',
             'auth/weak-password': 'Password is too weak. Use at least 6 characters.',
             'permission-denied': 'Firebase Permission Denied. You need to update your Firestore Rules in the Firebase Console to "allow read, write: if true;"'
