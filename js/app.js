@@ -977,29 +977,59 @@
     let loggedInRole = null;
 
     function showRegister() {
-      document.getElementById('login-screen').classList.add('hide');
-      setTimeout(() => { document.getElementById('login-screen').style.display = 'none'; document.getElementById('register-screen').classList.add('show'); }, 500);
+      // Hide toggle and other panels
+      document.getElementById('login-role-toggle').style.display = 'none';
+      document.getElementById('lc-panel-user').classList.remove('active');
+      document.getElementById('lc-panel-cmd').classList.remove('active');
+      document.getElementById('unified-login-card').classList.remove('wide');
+      
+      // Update Title/Desc
+      document.getElementById('lc-title-dynamic').textContent = 'Create Account';
+      document.getElementById('lc-desc-dynamic').textContent = 'Tourist Registration';
+
+      // Show user reg panel
+      const panel = document.getElementById('lc-panel-user-reg');
+      void panel.offsetWidth;
+      panel.classList.add('active');
     }
+
     function showAdminRegister() {
-      document.getElementById('login-screen').classList.add('hide');
-      setTimeout(() => { document.getElementById('login-screen').style.display = 'none'; document.getElementById('admin-reg-screen').classList.add('show'); }, 500);
+      // Hide toggle and other panels
+      document.getElementById('login-role-toggle').style.display = 'none';
+      document.getElementById('lc-panel-user').classList.remove('active');
+      document.getElementById('lc-panel-cmd').classList.remove('active');
+      document.getElementById('unified-login-card').classList.add('wide');
+      
+      // Update Title/Desc
+      document.getElementById('lc-title-dynamic').textContent = 'Admin Access';
+      document.getElementById('lc-desc-dynamic').textContent = 'Command Centre Registration';
+
+      // Show cmd reg panel
+      const panel = document.getElementById('lc-panel-cmd-reg');
+      void panel.offsetWidth;
+      panel.classList.add('active');
     }
+
     function backToLogin() {
-      document.getElementById('register-screen').classList.remove('show');
-      document.getElementById('admin-reg-screen').classList.remove('show');
-      document.getElementById('login-screen').style.display = 'flex';
-      setTimeout(() => document.getElementById('login-screen').classList.remove('hide'), 20);
+      document.getElementById('login-role-toggle').style.display = '';
+      document.getElementById('lc-panel-user-reg').classList.remove('active');
+      document.getElementById('unified-login-card').classList.remove('wide');
+      
       // Reset register form
       document.getElementById('reg-form-el').style.display = '';
       document.getElementById('reg-success').classList.remove('show');
       document.getElementById('reg-form-el').reset();
       document.getElementById('reg-error').textContent = '';
       document.getElementById('reg-back').style.display = '';
+
+      switchLoginMode('user');
     }
+
     function backToLoginFromAdmin() {
-      document.getElementById('admin-reg-screen').classList.remove('show');
-      document.getElementById('login-screen').style.display = 'flex';
-      setTimeout(() => document.getElementById('login-screen').classList.remove('hide'), 20);
+      document.getElementById('login-role-toggle').style.display = '';
+      document.getElementById('lc-panel-cmd-reg').classList.remove('active');
+      document.getElementById('unified-login-card').classList.remove('wide');
+      
       // Reset admin form
       document.getElementById('areg-form-el').style.display = '';
       document.getElementById('areg-success').classList.remove('show');
@@ -1007,16 +1037,19 @@
       document.getElementById('areg-error').textContent = '';
       document.getElementById('areg-back').style.display = '';
       document.getElementById('areg-progress').classList.remove('show');
+
       // Reset upload zones
       ['uz-idcard', 'uz-aadhaar'].forEach(id => {
         const zone = document.getElementById(id);
         zone.classList.remove('has-file');
         zone.innerHTML = id === 'uz-idcard' ?
           '<input type="file" id="areg-idcard" accept="image/*,.pdf" style="display:none" onchange="uzFileSelected(this,\'uz-idcard\')">' +
-          '<span class="uz-icon">🪣</span><span class="uz-text"><b>Click or drag</b> to upload<br/>your official ID card</span><span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>' :
+          '<span class="uz-icon">🪪</span><span class="uz-text"><b>Click or drag</b> to upload<br/>your official ID card</span><span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>' :
           '<input type="file" id="areg-aadhaar" accept="image/*,.pdf" style="display:none" onchange="uzFileSelected(this,\'uz-aadhaar\')">' +
           '<span class="uz-icon">🇮🇳</span><span class="uz-text"><b>Click or drag</b> to upload<br/>your Aadhaar card</span><span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>';
       });
+
+      switchLoginMode('cmd');
     }
 
     // ═══ FILE UPLOAD HELPERS ═══

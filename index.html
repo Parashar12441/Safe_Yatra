@@ -205,6 +205,133 @@
             </form>
             <div class="lc-footer">New user? <a href="#" onclick="showRegister();return false;">Register here</a></div>
           </div>
+
+          <!-- USER REGISTRATION FORM -->
+          <div class="lc-form-panel" id="lc-panel-user-reg">
+            <form class="reg-form" id="reg-form-el" onsubmit="return handleRegister(event)">
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Full Name</label>
+                  <input class="lf-input" id="reg-name" type="text" placeholder="e.g. Priya Sharma" required />
+                </div>
+                <div class="lf-group">
+                  <label class="lf-label">Mobile Number</label>
+                  <input class="lf-input" id="reg-mobile" type="tel" placeholder="+91 98765 43210" required />
+                </div>
+              </div>
+              <div class="lf-group">
+                <label class="lf-label">Email Address</label>
+                <input class="lf-input" id="reg-email" type="email" placeholder="you@example.com" required />
+              </div>
+              <div class="lf-group">
+                <label class="lf-label">Emergency Contact Name & Number</label>
+                <input class="lf-input" id="reg-emergency" type="text" placeholder="e.g. Rahul Sharma — +91 99887 76655" />
+              </div>
+              <div class="reg-divider"></div>
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Create Password</label>
+                  <input class="lf-input" id="reg-pass" type="password" placeholder="Min 6 characters" required />
+                </div>
+                <div class="lf-group">
+                  <label class="lf-label">Confirm Password</label>
+                  <input class="lf-input" id="reg-pass2" type="password" placeholder="Re-enter password" required />
+                </div>
+              </div>
+              <div class="reg-note">By registering you agree to our <a href="#">Terms of Service</a> & <a href="#">Privacy Policy</a></div>
+              <div id="reg-error"></div>
+              <button type="submit" class="login-btn btn-register">✓ Create Account</button>
+            </form>
+            <div id="reg-success">
+              <div id="reg-success-icon">✅</div>
+              <div id="reg-success-title">Account Created!</div>
+              <div id="reg-success-sub">Your tourist account has been registered successfully.<br />You can now login with your credentials.</div>
+              <button class="login-btn btn-user" onclick="backToLogin()" style="max-width:220px;margin:0 auto;">🧭 Go to Login</button>
+            </div>
+            <div style="text-align:center; margin-top:16px;">
+              <button id="reg-back" class="login-btn" style="background:transparent; border:1px solid var(--border); color:var(--text)" onclick="backToLogin()">← Back to Login</button>
+            </div>
+          </div>
+
+          <!-- ADMIN REGISTRATION FORM -->
+          <div class="lc-form-panel" id="lc-panel-cmd-reg">
+            <form class="areg-form" id="areg-form-el" onsubmit="return handleAdminRegister(event)">
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Full Name</label>
+                  <input class="lf-input" id="areg-name" type="text" placeholder="e.g. Inspector Raj Kumar" required />
+                </div>
+                <div class="lf-group">
+                  <label class="lf-label">Designation / Rank</label>
+                  <input class="lf-input" id="areg-designation" type="text" placeholder="e.g. Sub-Inspector, Tourism Police" required />
+                </div>
+              </div>
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Official Email</label>
+                  <input class="lf-input" id="areg-email" type="email" placeholder="name@gov.in" required />
+                </div>
+                <div class="lf-group">
+                  <label class="lf-label">Mobile Number</label>
+                  <input class="lf-input" id="areg-mobile" type="tel" placeholder="+91 98765 43210" required />
+                </div>
+              </div>
+              <div class="lf-group">
+                <label class="lf-label">Department / Organization</label>
+                <input class="lf-input" id="areg-dept" type="text" placeholder="e.g. Ministry of Tourism, Govt. of India" required />
+              </div>
+              <div class="reg-divider"></div>
+              <div class="areg-sec-label">📷 Identity Verification Documents</div>
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Official ID Card</label>
+                  <div class="upload-zone" id="uz-idcard" onclick="document.getElementById('areg-idcard').click()" ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)" ondrop="uzDrop(event,this,'areg-idcard')">
+                    <input type="file" id="areg-idcard" accept="image/*,.pdf" style="display:none" onchange="uzFileSelected(this,'uz-idcard')">
+                    <span class="uz-icon">🪪</span>
+                    <span class="uz-text"><b>Click or drag</b> to upload<br />your official ID card</span>
+                    <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
+                  </div>
+                </div>
+                <div class="lf-group">
+                  <label class="lf-label">Aadhaar Card</label>
+                  <div class="upload-zone" id="uz-aadhaar" onclick="document.getElementById('areg-aadhaar').click()" ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)" ondrop="uzDrop(event,this,'areg-aadhaar')">
+                    <input type="file" id="areg-aadhaar" accept="image/*,.pdf" style="display:none" onchange="uzFileSelected(this,'uz-aadhaar')">
+                    <span class="uz-icon">🇮🇳</span>
+                    <span class="uz-text"><b>Click or drag</b> to upload<br />your Aadhaar card</span>
+                    <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
+                  </div>
+                </div>
+              </div>
+              <div class="reg-divider"></div>
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Create Password</label>
+                  <input class="lf-input" id="areg-pass" type="password" placeholder="Min 6 characters" required />
+                </div>
+                <div class="lf-group">
+                  <label class="lf-label">Confirm Password</label>
+                  <input class="lf-input" id="areg-pass2" type="password" placeholder="Re-enter password" required />
+                </div>
+              </div>
+              <div class="reg-note">Your documents will be securely stored and verified by the admin team.<br />Account access will be granted after verification.</div>
+              <div id="areg-progress">
+                <div class="areg-pbar"><div class="areg-pfill" id="areg-pfill"></div></div>
+                <div id="areg-ptext">Uploading documents…</div>
+              </div>
+              <div id="areg-error"></div>
+              <button type="submit" class="login-btn btn-admin-reg" id="areg-submit-btn">🛡️ Submit for Verification</button>
+            </form>
+            <div id="areg-success">
+              <div style="font-size:48px;margin-bottom:14px;">✅</div>
+              <div style="font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:10px;">Application Submitted!</div>
+              <div class="areg-pending-badge">⏳ PENDING VERIFICATION</div>
+              <div style="font-size:12px;color:var(--textSec);line-height:1.7;margin-bottom:20px;">Your admin registration has been submitted successfully.<br />Our verification team will review your documents.<br />You'll receive access once approved.</div>
+              <button class="login-btn btn-cmd" onclick="backToLoginFromAdmin()" style="max-width:220px;margin:0 auto;">🔐 Back to Login</button>
+            </div>
+            <div style="text-align:center; margin-top:16px;">
+              <button id="areg-back" class="login-btn" style="background:transparent; border:1px solid var(--border); color:var(--text)" onclick="backToLoginFromAdmin()">← Back to Login</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -220,183 +347,7 @@
     </div>
   </div>
 
-  <!-- ═══ REGISTER SCREEN ═══ -->
-  <div id="register-screen">
-    <div id="reg-bg-grid"></div>
-    <div id="reg-bg-glow"></div>
-    <div id="reg-wrap">
-      <div id="reg-header">
-        <div id="reg-logo">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-          </svg>
-        </div>
-        <div id="reg-title">Create <span>Account</span></div>
-        <div id="reg-sub">Tourist Registration</div>
-      </div>
-      <div id="reg-card">
-        <form class="reg-form" id="reg-form-el" onsubmit="return handleRegister(event)">
-          <div class="reg-row">
-            <div class="lf-group">
-              <label class="lf-label">Full Name</label>
-              <input class="lf-input" id="reg-name" type="text" placeholder="e.g. Priya Sharma" required />
-            </div>
-            <div class="lf-group">
-              <label class="lf-label">Mobile Number</label>
-              <input class="lf-input" id="reg-mobile" type="tel" placeholder="+91 98765 43210" required />
-            </div>
-          </div>
-          <div class="lf-group">
-            <label class="lf-label">Email Address</label>
-            <input class="lf-input" id="reg-email" type="email" placeholder="you@example.com" required />
-          </div>
-          <div class="lf-group">
-            <label class="lf-label">Emergency Contact Name & Number</label>
-            <input class="lf-input" id="reg-emergency" type="text" placeholder="e.g. Rahul Sharma — +91 99887 76655" />
-          </div>
-          <div class="reg-divider"></div>
-          <div class="reg-row">
-            <div class="lf-group">
-              <label class="lf-label">Create Password</label>
-              <input class="lf-input" id="reg-pass" type="password" placeholder="Min 6 characters" required />
-            </div>
-            <div class="lf-group">
-              <label class="lf-label">Confirm Password</label>
-              <input class="lf-input" id="reg-pass2" type="password" placeholder="Re-enter password" required />
-            </div>
-          </div>
-          <div class="reg-note">By registering you agree to our <a href="#">Terms of Service</a> & <a href="#">Privacy
-              Policy</a></div>
-          <div id="reg-error"></div>
-          <button type="submit" class="login-btn btn-register">✓ Create Account</button>
-        </form>
-        <div id="reg-success">
-          <div id="reg-success-icon">✅</div>
-          <div id="reg-success-title">Account Created!</div>
-          <div id="reg-success-sub">Your tourist account has been registered successfully.<br />You can now login with
-            your credentials.</div>
-          <button class="login-btn btn-user" onclick="backToLogin()" style="max-width:220px;margin:0 auto;">🧭 Go to
-            Login</button>
-        </div>
-      </div>
-      <div style="text-align:center">
-        <button id="reg-back" onclick="backToLogin()">← Back to Login</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- ═══ ADMIN REGISTER SCREEN ═══ -->
-  <div id="admin-reg-screen">
-    <div id="areg-bg-grid"></div>
-    <div id="areg-bg-glow"></div>
-    <div id="areg-wrap">
-      <div id="areg-header">
-        <div id="areg-logo">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          </svg>
-        </div>
-        <div id="areg-title">Admin <span>Access</span></div>
-        <div id="areg-sub">Command Centre Registration</div>
-      </div>
-      <div id="areg-card">
-        <form class="areg-form" id="areg-form-el" onsubmit="return handleAdminRegister(event)">
-          <div class="reg-row">
-            <div class="lf-group">
-              <label class="lf-label">Full Name</label>
-              <input class="lf-input" id="areg-name" type="text" placeholder="e.g. Inspector Raj Kumar" required />
-            </div>
-            <div class="lf-group">
-              <label class="lf-label">Designation / Rank</label>
-              <input class="lf-input" id="areg-designation" type="text" placeholder="e.g. Sub-Inspector, Tourism Police"
-                required />
-            </div>
-          </div>
-          <div class="reg-row">
-            <div class="lf-group">
-              <label class="lf-label">Official Email</label>
-              <input class="lf-input" id="areg-email" type="email" placeholder="name@gov.in" required />
-            </div>
-            <div class="lf-group">
-              <label class="lf-label">Mobile Number</label>
-              <input class="lf-input" id="areg-mobile" type="tel" placeholder="+91 98765 43210" required />
-            </div>
-          </div>
-          <div class="lf-group">
-            <label class="lf-label">Department / Organization</label>
-            <input class="lf-input" id="areg-dept" type="text" placeholder="e.g. Ministry of Tourism, Govt. of India"
-              required />
-          </div>
-          <div class="reg-divider"></div>
-          <div class="areg-sec-label">📷 Identity Verification Documents</div>
-          <div class="reg-row">
-            <div class="lf-group">
-              <label class="lf-label">Official ID Card</label>
-              <div class="upload-zone" id="uz-idcard" onclick="document.getElementById('areg-idcard').click()"
-                ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)"
-                ondrop="uzDrop(event,this,'areg-idcard')">
-                <input type="file" id="areg-idcard" accept="image/*,.pdf" style="display:none"
-                  onchange="uzFileSelected(this,'uz-idcard')">
-                <span class="uz-icon">🪪</span>
-                <span class="uz-text"><b>Click or drag</b> to upload<br />your official ID card</span>
-                <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
-              </div>
-            </div>
-            <div class="lf-group">
-              <label class="lf-label">Aadhaar Card</label>
-              <div class="upload-zone" id="uz-aadhaar" onclick="document.getElementById('areg-aadhaar').click()"
-                ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)"
-                ondrop="uzDrop(event,this,'areg-aadhaar')">
-                <input type="file" id="areg-aadhaar" accept="image/*,.pdf" style="display:none"
-                  onchange="uzFileSelected(this,'uz-aadhaar')">
-                <span class="uz-icon">🇮🇳</span>
-                <span class="uz-text"><b>Click or drag</b> to upload<br />your Aadhaar card</span>
-                <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
-              </div>
-            </div>
-          </div>
-          <div class="reg-divider"></div>
-          <div class="reg-row">
-            <div class="lf-group">
-              <label class="lf-label">Create Password</label>
-              <input class="lf-input" id="areg-pass" type="password" placeholder="Min 6 characters" required />
-            </div>
-            <div class="lf-group">
-              <label class="lf-label">Confirm Password</label>
-              <input class="lf-input" id="areg-pass2" type="password" placeholder="Re-enter password" required />
-            </div>
-          </div>
-          <div class="reg-note">Your documents will be securely stored and verified by the admin team.<br />Account
-            access will be granted after verification.</div>
-          <div id="areg-progress">
-            <div class="areg-pbar">
-              <div class="areg-pfill" id="areg-pfill"></div>
-            </div>
-            <div id="areg-ptext">Uploading documents…</div>
-          </div>
-          <div id="areg-error"></div>
-          <button type="submit" class="login-btn btn-admin-reg" id="areg-submit-btn">🛡️ Submit for
-            Verification</button>
-        </form>
-        <div id="areg-success">
-          <div style="font-size:48px;margin-bottom:14px;">✅</div>
-          <div style="font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:10px;">Application Submitted!</div>
-          <div class="areg-pending-badge">⏳ PENDING VERIFICATION</div>
-          <div style="font-size:12px;color:var(--textSec);line-height:1.7;margin-bottom:20px;">Your admin registration
-            has been submitted successfully.<br />Our verification team will review your documents.<br />You'll receive
-            access once approved.</div>
-          <button class="login-btn btn-cmd" onclick="backToLoginFromAdmin()" style="max-width:220px;margin:0 auto;">🔐
-            Back to Login</button>
-        </div>
-      </div>
-      <div style="text-align:center">
-        <button id="areg-back" onclick="backToLoginFromAdmin()">← Back to Login</button>
-      </div>
-    </div>
-  </div>
 
   <!-- ═══ BOOT OVERLAY ═══ -->
   <div id="boot-overlay">

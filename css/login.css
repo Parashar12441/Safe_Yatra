@@ -7,8 +7,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden;
       transition: opacity .6s, transform .6s;
     }
 
@@ -134,8 +133,14 @@
       transition: all .45s cubic-bezier(.4, 0, .2, 1);
       cursor: default;
       position: relative;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 95vh;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+    
+    .login-card.wide {
+      max-width: 520px;
     }
 
     .login-card::before {
@@ -503,316 +508,6 @@
     #login-bottom-ticker-inner {
       display: inline-block;
       animation: ticker 35s linear infinite;
-    }
-
-    /* REGISTER PAGE */
-    #register-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 100000;
-      background: var(--bg);
-      display: none;
-      align-items: flex-start;
-      justify-content: center;
-      overflow-y: auto;
-    }
-
-    #register-screen.show {
-      display: flex;
-    }
-
-    #reg-bg-grid {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(rgba(50, 224, 196, .03) 1px, transparent 1px), linear-gradient(90deg, rgba(50, 224, 196, .03) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-
-    #reg-bg-glow {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 600px;
-      height: 600px;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0, 107, 84, .2) 0%, rgba(50, 224, 196, .06) 35%, transparent 70%);
-      animation: login-glow 6s ease-in-out infinite alternate;
-      pointer-events: none;
-    }
-
-    #reg-wrap {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      max-width: 460px;
-      padding: 40px 24px;
-    }
-
-    #reg-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    #reg-logo {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #006B54, #00A37A);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-      box-shadow: 0 8px 32px rgba(50, 224, 196, .3);
-      font-size: 24px;
-    }
-
-    #reg-title {
-      font-size: 26px;
-      font-weight: 700;
-    }
-
-    #reg-title span {
-      color: var(--mint);
-    }
-
-    #reg-sub {
-      font-size: 11px;
-      color: var(--textMuted);
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      margin-top: 5px;
-    }
-
-    #reg-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 30px 26px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-    }
-
-    #reg-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 16px;
-      background: linear-gradient(135deg, transparent 40%, rgba(50, 224, 196, .03));
-      pointer-events: none;
-    }
-
-    .reg-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .reg-row {
-      display: flex;
-      gap: 12px;
-    }
-
-    .reg-row .lf-group {
-      flex: 1;
-    }
-
-    .reg-form .lf-input:focus {
-      border-color: var(--mint);
-      box-shadow: 0 0 0 3px rgba(50, 224, 196, .12);
-    }
-
-    .reg-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 4px 0;
-    }
-
-    .reg-note {
-      font-size: 9px;
-      color: var(--textMuted);
-      line-height: 1.6;
-      text-align: center;
-      margin-top: 4px;
-    }
-
-    .reg-note a {
-      color: var(--mint);
-      text-decoration: none;
-    }
-
-    .reg-note a:hover {
-      text-decoration: underline;
-    }
-
-    #reg-error {
-      font-size: 10px;
-      color: var(--red);
-      min-height: 14px;
-      font-family: 'IBM Plex Mono', monospace;
-      text-align: center;
-    }
-
-    .btn-register {
-      background: linear-gradient(135deg, #006B54, #00A37A);
-      color: #fff;
-      box-shadow: 0 4px 18px rgba(50, 224, 196, .3);
-    }
-
-    .btn-register:hover {
-      box-shadow: 0 6px 24px rgba(50, 224, 196, .45);
-    }
-
-    #reg-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--textSec);
-      font-size: 11px;
-      padding: 8px 16px;
-      margin-top: 18px;
-      transition: all .2s;
-    }
-
-    #reg-back:hover {
-      border-color: var(--mint);
-      color: var(--mint);
-    }
-
-    #reg-success {
-      display: none;
-      text-align: center;
-      padding: 30px 10px;
-    }
-
-    #reg-success.show {
-      display: block;
-    }
-
-    #reg-success-icon {
-      font-size: 48px;
-      margin-bottom: 14px;
-    }
-
-    #reg-success-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--mint);
-      margin-bottom: 6px;
-    }
-
-    #reg-success-sub {
-      font-size: 12px;
-      color: var(--textSec);
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    /* ADMIN REGISTER PAGE */
-    #admin-reg-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 100000;
-      background: var(--bg);
-      display: none;
-      align-items: flex-start;
-      justify-content: center;
-      overflow-y: auto;
-    }
-
-    #admin-reg-screen.show {
-      display: flex;
-    }
-
-    #areg-bg-grid {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(rgba(0, 180, 216, .03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 180, 216, .03) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-
-    #areg-bg-glow {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 600px;
-      height: 600px;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(15, 76, 117, .2) 0%, rgba(0, 180, 216, .06) 35%, transparent 70%);
-      animation: login-glow 6s ease-in-out infinite alternate;
-      pointer-events: none;
-    }
-
-    #areg-wrap {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      max-width: 520px;
-      padding: 32px 24px;
-    }
-
-    #areg-header {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    #areg-logo {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--blue), var(--blueMid));
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-      box-shadow: 0 8px 32px rgba(0, 180, 216, .3);
-      font-size: 24px;
-    }
-
-    #areg-title {
-      font-size: 26px;
-      font-weight: 700;
-    }
-
-    #areg-title span {
-      color: var(--cyan);
-    }
-
-    #areg-sub {
-      font-size: 11px;
-      color: var(--textMuted);
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      margin-top: 5px;
-    }
-
-    #areg-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px 24px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-    }
-
-    #areg-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 16px;
-      background: linear-gradient(135deg, transparent 40%, rgba(0, 180, 216, .03));
-      pointer-events: none;
-    }
-
-    .areg-form {
-      display: flex;
-      flex-direction: column;
       gap: 12px;
     }
 
@@ -985,6 +680,35 @@
     #areg-back:hover {
       border-color: var(--cyan);
       color: var(--cyan);
+    }
+
+    #reg-success {
+      display: none;
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    #reg-success.show {
+      display: block;
+    }
+
+    #reg-success-icon {
+      font-size: 48px;
+      margin-bottom: 14px;
+    }
+
+    #reg-success-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--mint);
+      margin-bottom: 6px;
+    }
+
+    #reg-success-sub {
+      font-size: 12px;
+      color: var(--textSec);
+      line-height: 1.6;
+      margin-bottom: 20px;
     }
 
     #areg-success {
