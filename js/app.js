@@ -587,11 +587,49 @@
     const badgeCls = { danger: 'bd', caution: 'bc', safe: 'bs', SOS: 'bd', ZONE_BREACH: 'bc' };
     const batCol = p => p < 30 ? 'var(--red)' : p < 55 ? 'var(--orange)' : 'var(--mint)';
 
+    function isPointInPolygonGlobal(point, vs) {
+      let x = point.lat, y = point.lng;
+      let inside = false;
+      for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        let xi = vs[i].lat !== undefined ? vs[i].lat : vs[i][0];
+        let yi = vs[i].lng !== undefined ? vs[i].lng : vs[i][1];
+        let xj = vs[j].lat !== undefined ? vs[j].lat : vs[j][0];
+        let yj = vs[j].lng !== undefined ? vs[j].lng : vs[j][1];
+        let intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    }
+
     function renderZones() {
       const list = document.getElementById('z-list'); const empty = document.getElementById('z-empty');
       document.getElementById('z-count').textContent = zones.length;
       if (!zones.length) { list.innerHTML = ''; empty.style.display = 'block'; return; } empty.style.display = 'none';
-      list.innerHTML = zones.map(z => `<div class="zr"><div class="zr-info"><div class="zr-name">${z.name}</div><div class="zr-time" style="font-size:9px; color:var(--textSec);">${z.location ? z.location + ' • ' : ''}${z.createdAt}</div></div><span class="badge ${badgeCls[z.type] || 'bl'}">${z.type}</span><button class="zdel" onclick="deleteZone('${z.id}')">✕</button></div>`).join('');
+      
+      list.innerHTML = zones.map(z => {
+        let activeTourists = [];
+        if (window.latestLocs && window.latestUsers && z.coords) {
+          Object.values(window.latestLocs).forEach(loc => {
+            if (isPointInPolygonGlobal({ lat: loc.lat, lng: loc.lng }, z.coords)) {
+               const name = (window.latestUsers[loc.uid] && window.latestUsers[loc.uid].name) || 'Tourist';
+               activeTourists.push(name);
+            }
+          });
+        }
+        const touristHTML = activeTourists.length > 0 
+          ? `<div style="font-size:10px;color:var(--mint);margin-top:4px;">▶ ${activeTourists.length} Inside: ${activeTourists.join(', ')}</div>` 
+          : `<div style="font-size:10px;color:var(--textSec);margin-top:4px;">▶ 0 Inside</div>`;
+          
+        return `<div class="zr">
+          <div class="zr-info">
+             <div class="zr-name">${z.name}</div>
+             <div class="zr-time" style="font-size:9px; color:var(--textSec);">${z.location ? z.location + ' • ' : ''}${z.createdAt}</div>
+             ${touristHTML}
+          </div>
+          <span class="badge ${badgeCls[z.type] || 'bl'}">${z.type}</span>
+          <button class="zdel" onclick="deleteZone('${z.id}')">✕</button>
+        </div>`;
+      }).join('');
     }
 
     function renderAlerts() {
@@ -734,14 +772,20 @@
       if (unsubUsers) unsubUsers();
       if (unsubLocs) unsubLocs();
 
-      let latestUsers = {};
-      let latestLocs = {};
+      window.latestUsers = window.latestUsers || {};
+      window.latestLocs = window.latestLocs || {};
+      let latestUsers = window.latestUsers;
+      let latestLocs = window.latestLocs;
+      
       let usersFetched = false;
       let locsFetched = false;
 
       const renderMerged = () => {
         fetchTrace = 'Merging data...';
         renderTourists();
+        
+        // Also trigger zone re-render so live tourists inside geo-fences update instantly
+        if (typeof renderZones === 'function') renderZones();
 
         const realUsersMap = {};
 

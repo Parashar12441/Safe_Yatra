@@ -13,6 +13,11 @@ const firebaseConfig = {
 // Initialize Firebase using the Compat SDK
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+
+// Enforce LOCAL persistence to guarantee robust auto-login across sessions
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .catch(err => console.error("Firebase persistence error:", err));
+
 const db = firebase.firestore();
 const storage = firebase.storage();
 
