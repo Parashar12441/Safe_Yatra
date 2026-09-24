@@ -2747,7 +2747,7 @@
         iconUser.style.display = '';
         title.textContent = 'Tourist / User';
         title.style.color = 'var(--mint)';
-        desc.textContent = 'View your safety status, check zone alerts near you, weather conditions, and access emergency SOS features.';
+        desc.innerHTML = 'View your safety status, check zone alerts near you, weather conditions, and access emergency SOS features.<br><b style="color:var(--mint);">(Demo Email:- demo@gmail.com &nbsp;&nbsp; Password:- User12)</b>';
       } else {
         // Switch to Command Centre
         toggle.classList.remove('user-active');
@@ -2763,7 +2763,7 @@
         iconCmd.style.display = '';
         title.textContent = 'Command Centre';
         title.style.color = 'var(--cyan)';
-        desc.textContent = 'Admin access to the full tactical dashboard — geo-fencing, SOS response, tourist monitoring, and AI news zones.';
+        desc.innerHTML = 'Admin access to the full tactical dashboard — geo-fencing, SOS response, tourist monitoring, and AI news zones.<br><b style="color:var(--cyan);">(Admin ID:- demo@safeyatra.co.in &nbsp;&nbsp; Password:- Admin1)</b>';
       }
     }
 
