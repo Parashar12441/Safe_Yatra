@@ -116,8 +116,9 @@
       window.lmap = lmap;
       L.control.zoom({ position: 'bottomright' }).addTo(lmap);
 
-      darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; CARTO', maxZoom: 20, subdomains: 'abcd',
+      darkLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors', maxZoom: 19,
+        className: 'dark-map-tiles',
       });
       satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: '&copy; Esri', maxZoom: 19
@@ -1816,7 +1817,7 @@
     function initTouristMap() {
       tMap = L.map('t-map', { zoomControl: false }).setView([22.5, 82.5], 5);
       L.control.zoom({ position: 'bottomright' }).addTo(tMap);
-      tDarkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '© CARTO', maxZoom: 20, subdomains: 'abcd' });
+      tDarkLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19, className: 'dark-map-tiles' });
       tSatLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri', maxZoom: 19 });
       tDarkLayer.addTo(tMap);
       setTimeout(() => tMap.invalidateSize(), 200);
