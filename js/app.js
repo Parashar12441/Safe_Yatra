@@ -1084,15 +1084,12 @@
       document.getElementById('areg-progress').classList.remove('show');
 
       // Reset upload zones
-      ['uz-idcard', 'uz-aadhaar'].forEach(id => {
-        const zone = document.getElementById(id);
+      const zone = document.getElementById('uz-idcard');
+      if (zone) {
         zone.classList.remove('has-file');
-        zone.innerHTML = id === 'uz-idcard' ?
-          '<input type="file" id="areg-idcard" accept="image/*,.pdf" style="display:none" onchange="uzFileSelected(this,\'uz-idcard\')">' +
-          '<span class="uz-icon">🪪</span><span class="uz-text"><b>Click or drag</b> to upload<br/>your official ID card</span><span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>' :
-          '<input type="file" id="areg-aadhaar" accept="image/*,.pdf" style="display:none" onchange="uzFileSelected(this,\'uz-aadhaar\')">' +
-          '<span class="uz-icon">🇮🇳</span><span class="uz-text"><b>Click or drag</b> to upload<br/>your Aadhaar card</span><span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>';
-      });
+        zone.innerHTML = '<input type="file" id="areg-idcard" accept="image/*,.pdf" style="display:none" onchange="uzFileSelected(this,\'uz-idcard\')">' +
+          '<span class="uz-icon">🪪</span><span class="uz-text"><b>Click or drag</b> to upload<br/>your official ID card</span><span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>';
+      }
 
       switchLoginMode('cmd');
     }
