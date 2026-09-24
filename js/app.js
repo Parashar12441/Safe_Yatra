@@ -1870,7 +1870,19 @@
         }).catch(err => console.error('[GPS] Wake Lock error:', err));
       }
 
+      let _lastRenderedLat = null, _lastRenderedLng = null;
+
       function updatePos(lat, lng, acc, speed, alt) {
+        // Prevent GPS drift / jitter when stationary
+        if (_lastRenderedLat != null) {
+          const driftDist = haversine(_lastRenderedLat, _lastRenderedLng, lat, lng);
+          if (driftDist < 4.0 && (speed == null || speed <= 0)) {
+            return; // Ignore tiny fluctuations to keep marker perfectly still
+          }
+        }
+        _lastRenderedLat = lat;
+        _lastRenderedLng = lng;
+
         tUserLoc = { lat, lng, acc, alt: alt || 0 };
 
         // Trace line removed — sweep marker only
