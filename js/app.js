@@ -1140,7 +1140,6 @@
       const pass = document.getElementById('areg-pass').value;
       const pass2 = document.getElementById('areg-pass2').value;
       const idFile = uploadedFiles['areg-idcard'];
-      const aadhaarFile = uploadedFiles['areg-aadhaar'];
       const err = document.getElementById('areg-error');
       err.textContent = '';
       if (!name) { err.textContent = '⚠ Please enter your full name'; return false; }
@@ -1149,7 +1148,6 @@
       if (!mobile) { err.textContent = '⚠ Please enter your mobile number'; return false; }
       if (!dept) { err.textContent = '⚠ Please enter your department'; return false; }
       if (!idFile) { err.textContent = '⚠ Please upload your official ID card'; return false; }
-      if (!aadhaarFile) { err.textContent = '⚠ Please upload your Aadhaar card'; return false; }
       if (pass.length < 6) { err.textContent = '⚠ Password must be at least 6 characters'; return false; }
       if (pass !== pass2) { err.textContent = '⚠ Passwords do not match'; return false; }
       const btn = document.getElementById('areg-submit-btn');
@@ -1185,19 +1183,17 @@
           pfill.style.width = '25%'; 
           
           const idFilePath = `admin-verification/${uid}/id-card_${idFile.name}`;
-          const aadhaarFilePath = `admin-verification/${uid}/aadhaar_${aadhaarFile.name}`;
           
           return uploadFileSupabase(idFile, idFilePath, 'ID card').then(idURL => {
-            pfill.style.width = '55%';
-            return uploadFileSupabase(aadhaarFile, aadhaarFilePath, 'Aadhaar card').then(aadhaarURL => ({ uid, idURL, aadhaarURL }));
+            pfill.style.width = '75%';
+            return { uid, idURL };
           });
         })
-        .then(({ uid, idURL, aadhaarURL }) => {
+        .then(({ uid, idURL }) => {
           pfill.style.width = '85%'; ptxt.textContent = 'Saving profile…';
           return db.collection('users').doc(uid).set({
             name, designation, email, mobile, department: dept,
             idCardURL: idURL,
-            aadhaarURL: aadhaarURL,
             role: 'admin_pending',
             verificationStatus: 'pending',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
