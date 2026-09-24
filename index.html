@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -96,7 +96,8 @@
           link.click();
           document.body.removeChild(link);
         }
-      </script>    </div>
+      </script>
+    </div>
     <div id="login-bg-grid"></div>
     <div id="login-bg-glow"></div>
     <div id="login-scan"></div>
@@ -197,7 +198,7 @@
               </div>
               <div class="lf-error" id="user-error"></div>
               <button type="submit" class="login-btn btn-user">🧭 Login as Tourist</button>
-              
+
               <div class="login-divider">OR</div>
               <button type="button" class="login-btn btn-google" onclick="handleGoogleLogin()">
                 <img src="https://www.google.com/favicon.ico" alt="Google Logo" style="width: 20px; height: 20px;">
@@ -226,7 +227,8 @@
               </div>
               <div class="lf-group">
                 <label class="lf-label">Emergency Contact Name & Number</label>
-                <input class="lf-input" id="reg-emergency" type="text" placeholder="e.g. Rahul Sharma — +91 99887 76655" />
+                <input class="lf-input" id="reg-emergency" type="text"
+                  placeholder="e.g. Rahul Sharma — +91 99887 76655" />
               </div>
               <div class="reg-divider"></div>
               <div class="reg-row">
@@ -239,18 +241,23 @@
                   <input class="lf-input" id="reg-pass2" type="password" placeholder="Re-enter password" required />
                 </div>
               </div>
-              <div class="reg-note">By registering you agree to our <a href="#">Terms of Service</a> & <a href="#">Privacy Policy</a></div>
+              <div class="reg-note">By registering you agree to our <a href="#">Terms of Service</a> & <a
+                  href="#">Privacy Policy</a></div>
               <div id="reg-error"></div>
               <button type="submit" class="login-btn btn-register">✓ Create Account</button>
             </form>
             <div id="reg-success">
               <div id="reg-success-icon">✅</div>
               <div id="reg-success-title">Account Created!</div>
-              <div id="reg-success-sub">Your tourist account has been registered successfully.<br />You can now login with your credentials.</div>
-              <button class="login-btn btn-user" onclick="backToLogin()" style="max-width:220px;margin:0 auto;">🧭 Go to Login</button>
+              <div id="reg-success-sub">Your tourist account has been registered successfully.<br />You can now login
+                with your credentials.</div>
+              <button class="login-btn btn-user" onclick="backToLogin()" style="max-width:220px;margin:0 auto;">🧭 Go to
+                Login</button>
             </div>
             <div style="text-align:center; margin-top:16px;">
-              <button id="reg-back" class="login-btn" style="background:transparent; border:1px solid var(--border); color:var(--text)" onclick="backToLogin()">← Back to Login</button>
+              <button id="reg-back" class="login-btn"
+                style="background:transparent; border:1px solid var(--border); color:var(--text)"
+                onclick="backToLogin()">← Back to Login</button>
             </div>
           </div>
 
@@ -264,7 +271,8 @@
                 </div>
                 <div class="lf-group">
                   <label class="lf-label">Designation / Rank</label>
-                  <input class="lf-input" id="areg-designation" type="text" placeholder="e.g. Sub-Inspector, Tourism Police" required />
+                  <input class="lf-input" id="areg-designation" type="text"
+                    placeholder="e.g. Sub-Inspector, Tourism Police" required />
                 </div>
               </div>
               <div class="reg-row">
@@ -279,15 +287,19 @@
               </div>
               <div class="lf-group">
                 <label class="lf-label">Department / Organization</label>
-                <input class="lf-input" id="areg-dept" type="text" placeholder="e.g. Ministry of Tourism, Govt. of India" required />
+                <input class="lf-input" id="areg-dept" type="text"
+                  placeholder="e.g. Ministry of Tourism, Govt. of India" required />
               </div>
               <div class="reg-divider"></div>
               <div class="areg-sec-label">📷 Identity Verification Documents</div>
               <div class="reg-row">
                 <div class="lf-group">
                   <label class="lf-label">Official ID Card</label>
-                  <div class="upload-zone" id="uz-idcard" onclick="document.getElementById('areg-idcard').click()" ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)" ondrop="uzDrop(event,this,'areg-idcard')">
-                    <input type="file" id="areg-idcard" accept="image/*,.pdf" style="display:none" onchange="uzFileSelected(this,'uz-idcard')">
+                  <div class="upload-zone" id="uz-idcard" onclick="document.getElementById('areg-idcard').click()"
+                    ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)"
+                    ondrop="uzDrop(event,this,'areg-idcard')">
+                    <input type="file" id="areg-idcard" accept="image/*,.pdf" style="display:none"
+                      onchange="uzFileSelected(this,'uz-idcard')">
                     <span class="uz-icon">🪪</span>
                     <span class="uz-text"><b>Click or drag</b> to upload<br />your official ID card</span>
                     <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
@@ -295,8 +307,11 @@
                 </div>
                 <div class="lf-group">
                   <label class="lf-label">Aadhaar Card</label>
-                  <div class="upload-zone" id="uz-aadhaar" onclick="document.getElementById('areg-aadhaar').click()" ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)" ondrop="uzDrop(event,this,'areg-aadhaar')">
-                    <input type="file" id="areg-aadhaar" accept="image/*,.pdf" style="display:none" onchange="uzFileSelected(this,'uz-aadhaar')">
+                  <div class="upload-zone" id="uz-aadhaar" onclick="document.getElementById('areg-aadhaar').click()"
+                    ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)"
+                    ondrop="uzDrop(event,this,'areg-aadhaar')">
+                    <input type="file" id="areg-aadhaar" accept="image/*,.pdf" style="display:none"
+                      onchange="uzFileSelected(this,'uz-aadhaar')">
                     <span class="uz-icon">🇮🇳</span>
                     <span class="uz-text"><b>Click or drag</b> to upload<br />your Aadhaar card</span>
                     <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
@@ -314,30 +329,40 @@
                   <input class="lf-input" id="areg-pass2" type="password" placeholder="Re-enter password" required />
                 </div>
               </div>
-              <div class="reg-note">Your documents will be securely stored and verified by the admin team.<br />Account access will be granted after verification.</div>
+              <div class="reg-note">Your documents will be securely stored and verified by the admin team.<br />Account
+                access will be granted after verification.</div>
               <div id="areg-progress">
-                <div class="areg-pbar"><div class="areg-pfill" id="areg-pfill"></div></div>
+                <div class="areg-pbar">
+                  <div class="areg-pfill" id="areg-pfill"></div>
+                </div>
                 <div id="areg-ptext">Uploading documents…</div>
               </div>
               <div id="areg-error"></div>
-              <button type="submit" class="login-btn btn-admin-reg" id="areg-submit-btn">🛡️ Submit for Verification</button>
+              <button type="submit" class="login-btn btn-admin-reg" id="areg-submit-btn">🛡️ Submit for
+                Verification</button>
             </form>
             <div id="areg-success">
               <div style="font-size:48px;margin-bottom:14px;">✅</div>
-              <div style="font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:10px;">Application Submitted!</div>
+              <div style="font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:10px;">Application Submitted!
+              </div>
               <div class="areg-pending-badge">⏳ PENDING VERIFICATION</div>
-              <div style="font-size:12px;color:var(--textSec);line-height:1.7;margin-bottom:20px;">Your admin registration has been submitted successfully.<br />Our verification team will review your documents.<br />You'll receive access once approved.</div>
-              <button class="login-btn btn-cmd" onclick="backToLoginFromAdmin()" style="max-width:220px;margin:0 auto;">🔐 Back to Login</button>
+              <div style="font-size:12px;color:var(--textSec);line-height:1.7;margin-bottom:20px;">Your admin
+                registration has been submitted successfully.<br />Our verification team will review your
+                documents.<br />You'll receive access once approved.</div>
+              <button class="login-btn btn-cmd" onclick="backToLoginFromAdmin()"
+                style="max-width:220px;margin:0 auto;">🔐 Back to Login</button>
             </div>
             <div style="text-align:center; margin-top:16px;">
-              <button id="areg-back" class="login-btn" style="background:transparent; border:1px solid var(--border); color:var(--text)" onclick="backToLoginFromAdmin()">← Back to Login</button>
+              <button id="areg-back" class="login-btn"
+                style="background:transparent; border:1px solid var(--border); color:var(--text)"
+                onclick="backToLoginFromAdmin()">← Back to Login</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- BOTTOM RUNNING TICKER -->
+    <!-- AES-256 -->
     <div id="login-bottom-ticker">
       <span id="login-bottom-ticker-inner">SECURE ACCESS REQUIRED &nbsp;·&nbsp; AES-256 ENCRYPTED &nbsp;·&nbsp; FIREBASE
         PROTECTED &nbsp;·&nbsp; INDIA COVERAGE ACTIVE &nbsp;·&nbsp; GPS TRACKING READY &nbsp;·&nbsp; SOS MONITORING LIVE
@@ -1035,8 +1060,8 @@
             <div class="t-sos-ring"></div>
             <!-- Hold progress ring -->
             <svg class="t-sos-progress" viewBox="0 0 120 120">
-              <circle class="t-sos-progress-track" cx="60" cy="60" r="54"/>
-              <circle class="t-sos-progress-fill" id="t-sos-progress-fill" cx="60" cy="60" r="54"/>
+              <circle class="t-sos-progress-track" cx="60" cy="60" r="54" />
+              <circle class="t-sos-progress-fill" id="t-sos-progress-fill" cx="60" cy="60" r="54" />
             </svg>
             <span>SOS</span>
           </button>
@@ -1292,4 +1317,3 @@
 </body>
 
 </html>
-
