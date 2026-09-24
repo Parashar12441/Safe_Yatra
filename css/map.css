@@ -2,7 +2,7 @@
        Transforms standard OpenStreetMap tiles into a dark theme.
        No API key required — works forever with free OSM tiles. */
     .dark-map-tiles {
-      filter: grayscale(100%) invert(100%) brightness(80%) contrast(120%);
+      filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
     }
 
     /* MAP MODE TOGGLE */

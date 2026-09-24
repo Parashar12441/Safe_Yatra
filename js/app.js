@@ -127,7 +127,7 @@
       darkLayer.addTo(lmap);
 
       // HQ Marker
-      L.marker(center).addTo(lmap).bindPopup('<b>Safe Yatra HQ</b><br>New Delhi — Command Center');
+      L.marker([28.6139, 77.2090]).addTo(lmap).bindPopup('<b>Safe Yatra HQ</b><br>New Delhi — Command Center');
 
       drawnLayer = new L.FeatureGroup().addTo(lmap);
       drawCtrl = new L.Draw.Polygon(lmap, { shapeOptions: { color: '#FF1744', fillColor: '#D80032', fillOpacity: .18, weight: 2, dashArray: '8,4' }, showArea: false });
