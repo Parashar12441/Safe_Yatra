@@ -1873,11 +1873,11 @@
       let _lastRenderedLat = null, _lastRenderedLng = null;
 
       function updatePos(lat, lng, acc, speed, alt) {
-        // Prevent GPS drift / jitter when stationary
+        // Prevent GPS drift / jitter when stationary (Desktop IP location can bounce ~15m)
         if (_lastRenderedLat != null) {
           const driftDist = haversine(_lastRenderedLat, _lastRenderedLng, lat, lng);
-          if (driftDist < 4.0 && (speed == null || speed <= 0)) {
-            return; // Ignore tiny fluctuations to keep marker perfectly still
+          if (driftDist < 20.0 && (speed == null || speed <= 0)) {
+            return; // Ignore fluctuations to keep marker perfectly still
           }
         }
         _lastRenderedLat = lat;
