@@ -1269,8 +1269,7 @@
       document.getElementById('reg-error').textContent = '';
       document.getElementById('reg-back').style.display = '';
 
-      const panelUser = document.getElementById('lc-panel-user');
-      if (panelUser) panelUser.classList.add('active');
+      switchLoginMode('user');
     }
 
     function backToLoginFromAdmin() {
@@ -1531,15 +1530,14 @@
 
     function handleLogin(e, role) {
       e.preventDefault();
-      role = 'user';
-      const uId = 'user-user';
-      const pId = 'user-pass';
-      const eId = 'user-error';
+      const uId = role === 'cmd' ? 'cmd-user' : 'user-user';
+      const pId = role === 'cmd' ? 'cmd-pass' : 'user-pass';
+      const eId = role === 'cmd' ? 'cmd-error' : 'user-error';
       const u = document.getElementById(uId).value.trim();
       const p = document.getElementById(pId).value.trim();
       const errEl = document.getElementById(eId);
       errEl.textContent = '';
-      if (!u) { errEl.textContent = '⚠ Please enter your email or mobile'; return false; }
+      if (!u) { errEl.textContent = '⚠ Please enter your ' + (role === 'cmd' ? 'Admin ID (email)' : 'email'); return false; }
       if (!p) { errEl.textContent = '⚠ Please enter your password'; return false; }
       // Disable button
       const btn = e.target.querySelector('button[type="submit"]');
@@ -1551,9 +1549,15 @@
             const data = doc.exists ? doc.data() : { role: 'tourist', name: u };
             window.loggedInProfile = data;
             window.loggedInName = data.name || data.email || u;
-            loggedInRole = 'user';
-            localStorage.setItem('syRole', 'user');
-            startBoot('user');
+            if (role === 'cmd' && data.role !== 'admin') {
+              // Not an admin — sign out and show error
+              return auth.signOut().then(() => {
+                throw { code: 'custom', message: 'Access denied. This account does not have Command Centre privileges.' };
+              });
+            }
+            loggedInRole = role;
+            localStorage.setItem('syRole', role);
+            startBoot(role);
           });
         })
         .catch(error => {
@@ -1571,7 +1575,6 @@
     }
 
     function startBoot(role) {
-      role = 'user';
       const ls = document.getElementById('login-screen');
       const bo = document.getElementById('boot-overlay');
       const bl = document.getElementById('boot-lines');
@@ -1579,7 +1582,16 @@
       ls.classList.add('hide');
       setTimeout(() => { ls.style.display = 'none'; }, 600);
       bo.classList.add('show');
-      const lines = [
+      const lines = role === 'cmd' ? [
+        '[AUTH]  Verifying admin credentials…',
+        '[AUTH]  Identity confirmed — clearance LEVEL 5',
+        '[SYS]   Loading command centre modules…',
+        '[NET]   Establishing secure Firebase channel…',
+        '[GPS]   Satellite link acquired — 12 sats',
+        '[MAP]   Dark map tiles loaded',
+        '[SOS]   Alert feed connected',
+        '[BOOT]  Safe Yatra Command Centre — ONLINE ✓',
+      ] : [
         '[AUTH]  Verifying tourist credentials…',
         '[AUTH]  Identity confirmed — welcome',
         '[SYS]   Loading safety modules…',
@@ -1597,8 +1609,13 @@
           setTimeout(() => {
             bo.classList.remove('show');
             bo.style.display = 'none';
-            document.getElementById('tourist-app').style.display = 'flex';
-            bootTouristDashboard();
+            if (loggedInRole === 'user') {
+              document.getElementById('tourist-app').style.display = 'flex';
+              bootTouristDashboard();
+            } else {
+              document.getElementById('app').style.display = 'flex';
+              bootDashboard();
+            }
           }, 600);
           return;
         }
@@ -1750,10 +1767,14 @@
           const data = doc.exists ? doc.data() : { role: 'tourist' };
           window.loggedInProfile = data;
           window.loggedInName = data.name || data.email || 'User';
-          loggedInRole = 'user';
-          localStorage.setItem('syRole', 'user');
+          if (savedRole) {
+            loggedInRole = savedRole;
+          } else {
+            loggedInRole = data.role === 'admin' ? 'cmd' : 'user';
+            localStorage.setItem('syRole', loggedInRole);
+          }
           // Queue the auto-boot — will execute after intro animation finishes
-          pendingAutoLogin = 'user';
+          pendingAutoLogin = loggedInRole;
           tryAutoLogin();
         }).catch(err => {
           console.error('[AUTH] Auto-login failed:', err);
@@ -2946,7 +2967,7 @@
       if (scoreMini) scoreMini.style.left = '340px';
     }
 
-    // ═══ LOGIN MODE TOGGLE ═══
+    // ═══ LOGIN MODE TOGGLE (HackerRank-style) ═══
     function switchLoginMode(mode) {
       const card = document.getElementById('unified-login-card');
       const toggle = document.getElementById('login-role-toggle');
@@ -2959,20 +2980,39 @@
       const title = document.getElementById('lc-title-dynamic');
       const desc = document.getElementById('lc-desc-dynamic');
 
-      if (toggle) toggle.classList.add('user-active');
-      if (btnCmd) btnCmd.classList.remove('active');
-      if (btnUser) btnUser.classList.add('active');
-      if (card) { card.classList.remove('card-cmd'); card.classList.add('card-user', 'mode-user'); }
-      if (panelCmd) panelCmd.classList.remove('active');
-      if (panelUser) {
+      if (mode === 'user') {
+        // Switch to Tourist
+        toggle.classList.add('user-active');
+        btnCmd.classList.remove('active');
+        btnUser.classList.add('active');
+        card.classList.remove('card-cmd');
+        card.classList.add('card-user', 'mode-user');
+        panelCmd.classList.remove('active');
         panelUser.classList.remove('active');
-        void panelUser.offsetWidth;
+        void panelUser.offsetWidth; // force reflow for animation
         panelUser.classList.add('active');
+        iconCmd.style.display = 'none';
+        iconUser.style.display = '';
+        title.textContent = 'Tourist / User';
+        title.style.color = 'var(--mint)';
+        desc.innerHTML = 'View your safety status, check zone alerts near you, weather conditions, and access emergency SOS features.<br><b style="color:var(--mint);">(Demo Email:- demo@gmail.com &nbsp;&nbsp; Password:- User12)</b>';
+      } else {
+        // Switch to Command Centre
+        toggle.classList.remove('user-active');
+        btnUser.classList.remove('active');
+        btnCmd.classList.add('active');
+        card.classList.remove('card-user', 'mode-user');
+        card.classList.add('card-cmd');
+        panelUser.classList.remove('active');
+        panelCmd.classList.remove('active');
+        void panelCmd.offsetWidth; // force reflow for animation
+        panelCmd.classList.add('active');
+        iconUser.style.display = 'none';
+        iconCmd.style.display = '';
+        title.textContent = 'Command Centre';
+        title.style.color = 'var(--cyan)';
+        desc.innerHTML = 'Admin access to the full tactical dashboard — geo-fencing, SOS response, tourist monitoring, and AI news zones.<br><b style="color:var(--cyan);">(Admin ID:- demo@safeyatra.co.in &nbsp;&nbsp; Password:- Admin1)</b>';
       }
-      if (iconCmd) iconCmd.style.display = 'none';
-      if (iconUser) iconUser.style.display = '';
-      if (title) { title.textContent = 'Tourist / Traveler Login'; title.style.color = 'var(--mint)'; }
-      if (desc) desc.innerHTML = 'Real-time safety monitoring, live GPS tracking, zone alerts near you, and emergency SOS assistance across India.<br><b style="color:var(--mint);">(Demo: demo@gmail.com &nbsp;&nbsp; Pass: User12)</b>';
     }
 
     // Toggle Mobile Panels for Tourist Dashboard

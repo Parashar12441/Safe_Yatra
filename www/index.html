@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -130,20 +130,65 @@
         <div id="login-subtitle">Smart Tourist Safety Platform · India</div>
       </div>
       <div id="login-cards">
-        <div class="login-card card-user mode-user" id="unified-login-card">
+        <div class="login-card card-cmd" id="unified-login-card">
+          <!-- ROLE TOGGLE -->
+          <div class="login-role-toggle" id="login-role-toggle">
+            <button type="button" class="lrt-btn active" id="lrt-cmd" onclick="switchLoginMode('cmd')">
+              <span class="lrt-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg></span>
+              Command Centre
+            </button>
+            <button type="button" class="lrt-btn" id="lrt-user" onclick="switchLoginMode('user')">
+              <span class="lrt-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                </svg></span>
+              Tourist / User
+            </button>
+          </div>
+
           <!-- ICON + TITLE -->
           <div class="lc-icon" id="lc-icon-dynamic">
-            <svg id="lc-svg-user" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            <svg id="lc-svg-cmd" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <svg id="lc-svg-user" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
               <circle cx="12" cy="12" r="10" />
               <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
             </svg>
           </div>
-          <div class="lc-title" id="lc-title-dynamic" style="color:var(--mint);">Tourist / Traveler Login</div>
-          <div class="lc-desc" id="lc-desc-dynamic">Real-time safety monitoring, live GPS tracking, zone alerts near you, and emergency SOS assistance across India.<br><b style="color:var(--mint);">(Demo: demo@gmail.com &nbsp;&nbsp; Pass: User12)</b></div>
+          <div class="lc-title" id="lc-title-dynamic">Command Centre</div>
+          <div class="lc-desc" id="lc-desc-dynamic">Admin access to the full tactical dashboard — geo-fencing, SOS
+            response, tourist monitoring, and AI news zones.<br><b style="color:var(--cyan);">(Admin ID:-
+              demo@safeyatra.co.in &nbsp;&nbsp; Password:- Admin1)</b></div>
+
+          <!-- CMD FORM -->
+          <div class="lc-form-panel active" id="lc-panel-cmd">
+            <form class="lc-form" onsubmit="return handleLogin(event,'cmd')">
+              <div class="lf-group">
+                <label class="lf-label">Admin ID</label>
+                <input class="lf-input" id="cmd-user" type="text" placeholder="e.g. admin@safeyatra.gov.in"
+                  autocomplete="username" />
+              </div>
+              <div class="lf-group">
+                <label class="lf-label">Password</label>
+                <input class="lf-input" id="cmd-pass" type="password" placeholder="Enter secure passphrase"
+                  autocomplete="current-password" />
+              </div>
+              <div class="lf-error" id="cmd-error"></div>
+              <button type="submit" class="login-btn btn-cmd">🔐 Access Command Centre</button>
+            </form>
+            <div class="lc-footer">Authorized personnel only · <a href="#"
+                onclick="showAdminRegister();return false;">Request access</a></div>
+          </div>
 
           <!-- USER FORM -->
-          <div class="lc-form-panel active" id="lc-panel-user">
+          <div class="lc-form-panel" id="lc-panel-user">
             <form class="lc-form" onsubmit="return handleLogin(event,'user')">
               <div class="lf-group">
                 <label class="lf-label">Mobile / Email</label>
@@ -164,7 +209,7 @@
                 Sign in with Google
               </button>
             </form>
-            <div class="lc-footer">New traveler? <a href="#" onclick="showRegister();return false;">Register here</a></div>
+            <div class="lc-footer">New user? <a href="#" onclick="showRegister();return false;">Register here</a></div>
           </div>
 
           <!-- USER REGISTRATION FORM -->
@@ -219,6 +264,92 @@
                 onclick="backToLogin()">← Back to Login</button>
             </div>
           </div>
+
+          <!-- ADMIN REGISTRATION FORM -->
+          <div class="lc-form-panel" id="lc-panel-cmd-reg">
+            <form class="areg-form" id="areg-form-el" onsubmit="return handleAdminRegister(event)">
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Full Name</label>
+                  <input class="lf-input" id="areg-name" type="text" placeholder="e.g. Inspector Raj Kumar" required />
+                </div>
+                <div class="lf-group">
+                  <label class="lf-label">Designation / Rank</label>
+                  <input class="lf-input" id="areg-designation" type="text"
+                    placeholder="e.g. Sub-Inspector, Tourism Police" required />
+                </div>
+              </div>
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Official Email</label>
+                  <input class="lf-input" id="areg-email" type="email" placeholder="name@gov.in" required />
+                </div>
+                <div class="lf-group">
+                  <label class="lf-label">Mobile Number</label>
+                  <input class="lf-input" id="areg-mobile" type="tel" placeholder="+91 98765 43210" required />
+                </div>
+              </div>
+              <div class="lf-group">
+                <label class="lf-label">Department / Organization</label>
+                <input class="lf-input" id="areg-dept" type="text"
+                  placeholder="e.g. Ministry of Tourism, Govt. of India" required />
+              </div>
+              <div class="reg-divider"></div>
+              <div class="areg-sec-label">📷 Identity Verification Documents</div>
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Official ID Card</label>
+                  <div class="upload-zone" id="uz-idcard" onclick="document.getElementById('areg-idcard').click()"
+                    ondragover="uzDragOver(event,this)" ondragleave="uzDragLeave(this)"
+                    ondrop="uzDrop(event,this,'areg-idcard')">
+                    <input type="file" id="areg-idcard" accept="image/*,.pdf" style="display:none"
+                      onchange="uzFileSelected(this,'uz-idcard')">
+                    <span class="uz-icon">🪪</span>
+                    <span class="uz-text"><b>Click or drag</b> to upload<br />your official ID card</span>
+                    <span class="uz-formats">JPG, PNG, PDF · Max 5MB</span>
+                  </div>
+                </div>
+              </div>
+              <div class="reg-divider"></div>
+              <div class="reg-row">
+                <div class="lf-group">
+                  <label class="lf-label">Create Password</label>
+                  <input class="lf-input" id="areg-pass" type="password" placeholder="Min 6 characters" required />
+                </div>
+                <div class="lf-group">
+                  <label class="lf-label">Confirm Password</label>
+                  <input class="lf-input" id="areg-pass2" type="password" placeholder="Re-enter password" required />
+                </div>
+              </div>
+              <div class="reg-note">Your documents will be securely stored and verified by the admin team.<br />Account
+                access will be granted after verification.</div>
+              <div id="areg-progress">
+                <div class="areg-pbar">
+                  <div class="areg-pfill" id="areg-pfill"></div>
+                </div>
+                <div id="areg-ptext">Uploading documents…</div>
+              </div>
+              <div id="areg-error"></div>
+              <button type="submit" class="login-btn btn-admin-reg" id="areg-submit-btn">🛡️ Submit for
+                Verification</button>
+            </form>
+            <div id="areg-success">
+              <div style="font-size:48px;margin-bottom:14px;">✅</div>
+              <div style="font-size:20px;font-weight:700;color:var(--cyan);margin-bottom:10px;">Application Submitted!
+              </div>
+              <div class="areg-pending-badge">⏳ PENDING VERIFICATION</div>
+              <div style="font-size:12px;color:var(--textSec);line-height:1.7;margin-bottom:20px;">Your admin
+                registration has been submitted successfully.<br />Our verification team will review your
+                documents.<br />You'll receive access once approved.</div>
+              <button class="login-btn btn-cmd" onclick="backToLoginFromAdmin()"
+                style="max-width:220px;margin:0 auto;">🔐 Back to Login</button>
+            </div>
+            <div style="text-align:center; margin-top:16px;">
+              <button id="areg-back" class="login-btn"
+                style="background:transparent; border:1px solid var(--border); color:var(--text)"
+                onclick="backToLoginFromAdmin()">← Back to Login</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -243,7 +374,265 @@
     <div id="boot-lines"></div>
   </div>
 
+  <div id="app" style="display:none;">
 
+    <!-- LEFT PANEL -->
+    <div id="lp">
+      <div id="logo-bar">
+        <div id="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B4D8" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+            <circle cx="12" cy="9" r="2.5" />
+          </svg>
+        </div>
+        <div>
+          <div id="logo-title">Safe <span>Yatra</span></div>
+          <div id="logo-sub">ADMIN COMMAND CENTER</div>
+        </div>
+        <!-- USER PROFILE BADGE -->
+        <div id="user-profile-badge"
+          style="margin-left:auto; display:none; align-items:center; justify-content:center; background:rgba(0,180,216,0.1); width:42px; height:42px; border-radius:50%; border:1px solid rgba(0,180,216,0.2); cursor:pointer; position:relative; transition:all 0.2s;"
+          onclick="toggleProfileModal()">
+          <div id="up-icon" style="display:flex;align-items:center;justify-content:center;color:currentColor;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <div id="up-tooltip"
+            style="position:absolute; top:52px; left:50%; transform:translateX(-50%) translateY(-4px); background:var(--surfaceAlt); color:#E8F4FD; padding:6px 10px; border-radius:6px; font-size:11px; font-weight:700; white-space:nowrap; opacity:0; pointer-events:none; transition:all 0.2s; border:1px solid var(--cyan); box-shadow:0 4px 12px rgba(0,0,0,0.4); z-index:90;">
+            Loading...</div>
+        </div>
+      </div>
+      <div id="pw-bar">
+        <div id="pw-dot"></div>
+        <div id="pw-txt">Powered by <b>OpenStreetMap + Leaflet</b> — No API Key</div>
+      </div>
+      <div id="stats-row">
+        <div class="sc">
+          <div class="sc-l">Tourists</div>
+          <div class="sc-v" id="s-t" style="color:var(--cyan)">12</div>
+        </div>
+        <div class="sc">
+          <div class="sc-l">Zones</div>
+          <div class="sc-v" id="s-z" style="color:var(--textSec)">0</div>
+        </div>
+        <div class="sc">
+          <div class="sc-l">SOS</div>
+          <div class="sc-v" id="s-s" style="color:var(--red)">8</div>
+        </div>
+      </div>
+      <div id="tab-hdr">
+        <div class="sec-lbl">Geo-Fence Management</div>
+        <div id="tab-bar">
+          <button class="tb active" onclick="switchTab('manual',this)">Manual Draw</button>
+          <button class="tb" onclick="switchTab('auto',this)">AI News</button>
+        </div>
+      </div>
+      <div id="tab-body">
+        <div id="tp-manual" class="tp active">
+          <p class="draw-hint">Click <b style="color:var(--text)">Draw Zone</b>, click map points, click first point
+            again to close.</p>
+          <button id="draw-btn" onclick="startDraw()">✚ Draw Zone on Map</button>
+          <button id="cancel-draw-btn" onclick="cancelDraw()">Cancel Drawing</button>
+          <div id="confirm-box">
+            <div class="c-title">✓ POLYGON DRAWN — Name this zone</div>
+            <label class="fl">ZONE NAME</label><input id="z-name" class="fi" type="text"
+              placeholder="e.g. Mumbai Coastal Buffer" />
+            <label class="fl">RISK LEVEL</label>
+            <select id="z-risk" class="fsl">
+              <option value="High">High — Danger (Red)</option>
+              <option value="Medium">Medium — Caution (Orange)</option>
+              <option value="Low">Low — Safe (Green)</option>
+            </select>
+            <div class="cb"><button id="cfm-btn" onclick="confirmZone()">Push to Firestore →</button><button
+                id="dsc-btn" onclick="cancelDraw()">Discard</button></div>
+          </div>
+          <div class="zl-lbl">Active Zones (<span id="z-count">0</span>)</div>
+          <div id="z-empty">No zones yet — draw one above</div>
+          <div id="z-list"></div>
+        </div>
+        <div id="tp-auto" class="tp">
+          <p class="ai-desc">AI scans NewsAPI + GDELT every 10 min. Zones auto-render on map in <b
+              style="color:var(--red)">red</b>, <b style="color:var(--orange)">orange</b> or <b
+              style="color:#FFD600">yellow</b>.</p>
+          <div class="nz-bar"><span class="nz-lbl">AI ZONES</span>
+            <div class="nz-item">
+              <div class="nz-sw" style="background:#D80032"></div><span class="nz-txt">High</span>
+            </div>
+            <div class="nz-item">
+              <div class="nz-sw" style="background:#FFAA00"></div><span class="nz-txt">Med</span>
+            </div>
+            <div class="nz-item">
+              <div class="nz-sw" style="background:#FFD600"></div><span class="nz-txt">Low</span>
+            </div><span id="nz-ct">0 zones</span>
+          </div>
+          <div id="news-list"></div>
+        </div>
+      </div>
+      <div id="ds-box">
+        <div id="ds-hdr">
+          <div id="ds-dot"></div>LIVE DATA STREAM
+        </div>
+        <div id="ds-lines"></div>
+      </div>
+    </div>
+
+    <!-- RESIZE DIVIDER LEFT -->
+    <div class="divider" id="div-left" onmousedown="startResize(event,'left')"></div>
+
+    <!-- CENTER MAP -->
+    <div id="center">
+      <div id="map-topbar">
+        <div id="tb-left">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div id="status-dot"></div><span id="status-text">Maps Live — India</span>
+          </div>
+          <div class="sig-bars">
+            <div class="sb" style="height:4px"></div>
+            <div class="sb" style="height:7px;animation-delay:.2s"></div>
+            <div class="sb" style="height:10px;animation-delay:.4s"></div>
+            <div class="sb" style="height:14px;animation-delay:.6s;background:var(--cyan)"></div>
+          </div>
+          <span id="clock-txt">00:00:00 IST</span>
+        </div>
+        <div id="ticker-wrap"><span id="ticker-inner">SYS ONLINE &nbsp;·&nbsp; FIREBASE LIVE &nbsp;·&nbsp; INDIA
+            COVERAGE ACTIVE &nbsp;·&nbsp; TOURISTS: 12 &nbsp;·&nbsp; ACTIVE SOS: 8 &nbsp;·&nbsp; ZONES: 0 &nbsp;·&nbsp;
+            UPTIME: 00:00:00 &nbsp;·&nbsp; ENCRYPTION: AES-256 &nbsp;║&nbsp; SYS ONLINE &nbsp;·&nbsp; FIREBASE LIVE
+            &nbsp;·&nbsp; INDIA COVERAGE ACTIVE &nbsp;·&nbsp; TOURISTS: 12 &nbsp;·&nbsp; ACTIVE SOS: 8 &nbsp;·&nbsp;
+            ZONES: 0 &nbsp;·&nbsp; UPTIME: 00:00:00 &nbsp;·&nbsp; ENCRYPTION: AES-256</span></div>
+        <div id="map-legend">
+          <div class="leg-i">
+            <div class="leg-d" style="background:var(--red)"></div><span class="leg-l">SOS</span>
+          </div>
+          <div class="leg-i">
+            <div class="leg-d" style="background:var(--orange)"></div><span class="leg-l">Caution</span>
+          </div>
+          <div class="leg-i">
+            <div class="leg-d" style="background:var(--mint)"></div><span class="leg-l">Safe</span>
+          </div>
+          <div class="leg-i">
+            <div class="leg-d" style="background:var(--cyan)"></div><span class="leg-l">Admin</span>
+          </div>
+          <span id="sos-map-ct">0 SOS</span>
+          <button id="sat-toggle" class="map-mode-btn" onclick="toggleMapMode()" title="Toggle Satellite View">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+              </path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="map-container">
+        <div id="map"></div>
+        <div id="map-grid"></div>
+        <div class="mc mc-tl"></div>
+        <div class="mc mc-tr"></div>
+        <div class="mc mc-bl"></div>
+        <div class="mc mc-br"></div>
+        <div id="scan-line"></div>
+        <div id="radar-wrap"><canvas id="radar-canvas" width="130" height="130"></canvas></div>
+        <div id="wx-panel">
+          <div id="wx-p-title">Area Weather<div id="wx-live-dot"></div>
+          </div>
+          <div class="wx-r"><span class="wx-rl">Condition</span><span class="wx-rv" id="wx-cond">—</span></div>
+          <div class="wx-r"><span class="wx-rl">Temp</span><span class="wx-rv" id="wx-temp">—°C</span></div>
+          <div class="wx-r"><span class="wx-rl">Humidity</span><span class="wx-rv" id="wx-hum">—%</span></div>
+          <div class="wx-r"><span class="wx-rl">Wind</span><span class="wx-rv" id="wx-wind">—km/h</span></div>
+          <div class="wx-r"><span class="wx-rl">Visibility</span><span class="wx-rv" id="wx-vis">—km</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN MOBILE TOGGLES -->
+    <div id="admin-mob-btns"
+      style="display:none; position:fixed; bottom:24px; left:20px; right:20px; z-index:10005; gap:12px; justify-content:center; pointer-events:none;">
+      <button onclick="toggleMobilePanel('lp')"
+        style="background:rgba(10,25,41,0.92); backdrop-filter:blur(12px); border:1px solid var(--cyan); color:var(--cyan); padding:12px 24px; border-radius:30px; font-weight:700; font-size:12px; box-shadow:0 8px 32px rgba(0,0,0,0.6); pointer-events:auto; letter-spacing:1px; flex:1; max-width:160px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;"
+        onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+        COMMAND
+      </button>
+      <button onclick="toggleMobilePanel('rp')"
+        style="background:rgba(10,25,41,0.92); backdrop-filter:blur(12px); border:1px solid var(--red); color:var(--red); padding:12px 24px; border-radius:30px; font-weight:700; font-size:12px; box-shadow:0 8px 32px rgba(0,0,0,0.6); pointer-events:auto; letter-spacing:1px; flex:1; max-width:160px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;"
+        onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        ALERTS
+      </button>
+    </div>
+
+    <!-- RESIZE DIVIDER RIGHT -->
+    <div class="divider" id="div-right" onmousedown="startResize(event,'right')"></div>
+
+    <!-- RIGHT PANEL -->
+    <div id="rp">
+      <div id="al-hdr">
+        <div class="ahi">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div id="al-dot"></div><span id="al-lbl">COMMAND ALERTS</span>
+          </div>
+          <div id="al-hdr-right">
+            <button id="clear-sos" onclick="clearAllSOS()">CLEAR ALL</button>
+          </div>
+        </div>
+        <div class="alert-tabs">
+          <button id="atb-active" class="atb active" onclick="switchAlertTab('active')">
+            ONGOING <span id="sos-badge-count" style="margin-left:4px; opacity:0.6">0</span>
+          </button>
+          <button id="atb-resolved" class="atb" onclick="switchAlertTab('resolved')">
+            RESOLVED <span id="res-badge-count" style="margin-left:4px; opacity:0.6">0</span>
+          </button>
+        </div>
+      </div>
+      <div id="uptime-bar">
+        <div class="ub-item"><span class="ub-l">UPTIME</span><span class="ub-v" id="up-val">00:00:00</span></div>
+        <div class="ub-item"><span class="ub-l">PACKETS</span><span class="ub-v" id="pkt-val">0</span></div>
+        <div class="ub-item"><span class="ub-l">PING</span><span class="ub-v" id="ping-val">—ms</span></div>
+        <div class="sig-bars" style="height:12px">
+          <div class="sb" style="height:3px"></div>
+          <div class="sb" style="height:6px;animation-delay:.2s"></div>
+          <div class="sb" style="height:9px;animation-delay:.4s"></div>
+          <div class="sb" style="height:12px;animation-delay:.6s;background:var(--cyan)"></div>
+        </div>
+      </div>
+      <div id="sig-log">
+        <div id="sig-log-inner"></div>
+      </div>
+      <div id="ts">
+        <div class="ts-lbl">Tourist Status</div>
+        <div id="t-rows" style="max-height: 280px; overflow-y: auto; overflow-x: hidden; padding-right: 4px;"></div>
+        <button id="t-toggle" onclick="toggleTourists()">▼ Show More</button>
+      </div>
+      <div id="al-feed" class="alert-pane active"></div>
+      <div id="resolved-feed" class="alert-pane"
+        style="display:none; flex:1; overflow-y:auto; padding:11px 13px; background:rgba(0,0,0,0.15);"></div>
+      <div id="rp-foot">
+        <span id="zct-txt">geo_zones: <span id="zct-val">0</span></span>
+        <div id="fb-s">
+          <div id="fb-dot"></div><span id="fb-lbl">Firebase Live</span>
+          <button id="refresh-btn" onclick="location.reload()"
+            style="background:transparent; border:1px solid var(--cyan); color:var(--cyan); padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; margin-right:6px; transition:0.2s;">REFRESH</button>
+          <button id="logout-btn" onclick="handleLogout()">LOGOUT</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- #app -->
 
   <!-- ═══ TOURIST DASHBOARD ═══ -->
   <div id="tourist-app" style="display:none; flex-direction:column; height:100vh; overflow:hidden;">
@@ -273,8 +662,6 @@
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
           </svg>
           <span id="t-user-name">Tourist</span>
-          <!-- Safe Yatra Offline Mesh Status Indicator -->
-          <span id="mesh-status-indicator" style="display:none; font-size:10px; margin-left:10px; padding:2px 8px; border-radius:10px; background:rgba(50,224,196,0.1); font-weight:600; letter-spacing:0.3px;"></span>
         </div>
         <button id="t-refresh-btn" onclick="location.reload()"
           style="background:transparent; border:1px solid var(--mint); color:var(--mint); padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; margin-right:8px; transition:0.2s;"
@@ -584,7 +971,7 @@
                 <div style="flex:1.2; display:flex; flex-direction:column; gap:12px;">
                   <div style="background:var(--bg); border-radius:8px; padding:12px;">
                     <button class="t-card-title"
-                      onclick="toggleCardAccordion('sc-news-content', 'sc-news-icon')"
+                      onclick="const c = document.getElementById('sc-news-content'); const i = document.getElementById('sc-news-icon'); if(c.style.display==='none'){c.style.display='block';i.textContent='−';}else{c.style.display='none';i.textContent='+';}"
                       style="margin-bottom:0; font-size:11px; background:transparent; border:none; color:inherit; cursor:pointer; width:100%; text-align:left; display:flex; justify-content:space-between; align-items:center; padding:0;">
                       <span>📰 Latest Safety News</span>
                       <span id="sc-news-icon" style="font-size:16px;">+</span>
@@ -595,7 +982,7 @@
                   </div>
                   <div style="background:var(--bg); border-radius:8px; padding:12px;">
                     <button class="t-card-title"
-                      onclick="toggleCardAccordion('sc-geo-content', 'sc-geo-icon')"
+                      onclick="const c = document.getElementById('sc-geo-content'); const i = document.getElementById('sc-geo-icon'); if(c.style.display==='none'){c.style.display='block';i.textContent='−';}else{c.style.display='none';i.textContent='+';}"
                       style="margin-bottom:0; font-size:11px; background:transparent; border:none; color:var(--orange); cursor:pointer; width:100%; text-align:left; display:flex; justify-content:space-between; align-items:center; padding:0;">
                       <span>⚠ Geo-Fence Alerts</span>
                       <span id="sc-geo-icon" style="font-size:16px;">+</span>

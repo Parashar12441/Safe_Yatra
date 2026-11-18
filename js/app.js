@@ -1216,20 +1216,27 @@
     let loggedInRole = null;
 
     function showRegister() {
-      // Hide toggle and other panels
-      document.getElementById('login-role-toggle').style.display = 'none';
-      document.getElementById('lc-panel-user').classList.remove('active');
-      document.getElementById('lc-panel-cmd').classList.remove('active');
-      document.getElementById('unified-login-card').classList.remove('wide');
+      const toggle = document.getElementById('login-role-toggle');
+      if (toggle) toggle.style.display = 'none';
+      const panelUser = document.getElementById('lc-panel-user');
+      if (panelUser) panelUser.classList.remove('active');
+      const panelCmd = document.getElementById('lc-panel-cmd');
+      if (panelCmd) panelCmd.classList.remove('active');
+      const card = document.getElementById('unified-login-card');
+      if (card) card.classList.remove('wide');
       
       // Update Title/Desc
-      document.getElementById('lc-title-dynamic').textContent = 'Create Account';
-      document.getElementById('lc-desc-dynamic').textContent = 'Tourist Registration';
+      const title = document.getElementById('lc-title-dynamic');
+      if (title) title.textContent = 'Create Account';
+      const desc = document.getElementById('lc-desc-dynamic');
+      if (desc) desc.textContent = 'Traveler Registration';
 
       // Show user reg panel
       const panel = document.getElementById('lc-panel-user-reg');
-      void panel.offsetWidth;
-      panel.classList.add('active');
+      if (panel) {
+        void panel.offsetWidth;
+        panel.classList.add('active');
+      }
     }
 
     function showAdminRegister() {
@@ -1250,7 +1257,8 @@
     }
 
     function backToLogin() {
-      document.getElementById('login-role-toggle').style.display = '';
+      const toggle = document.getElementById('login-role-toggle');
+      if (toggle) toggle.style.display = '';
       document.getElementById('lc-panel-user-reg').classList.remove('active');
       document.getElementById('unified-login-card').classList.remove('wide');
       
