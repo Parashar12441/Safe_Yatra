@@ -1,0 +1,42 @@
+name: safe_yatra_app
+description: "Safe Yatra - Offline Finding Network & Tourist Safety Monitoring System"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Map & Navigation
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+
+  # Hardware, Permissions & Connectivity
+  permission_handler: ^11.3.1
+  connectivity_plus: ^6.1.0
+
+  # Local Persistence & Cryptography
+  sqflite: ^2.4.1
+  path_provider: ^2.1.5
+  crypto: ^3.0.6
+
+  # Firebase Realtime Cloud Sync
+  firebase_core: ^3.10.0
+  cloud_firestore: ^5.6.1
+
+  # Visuals & UI
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+

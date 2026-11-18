@@ -1,4 +1,198 @@
     // ═══ DATA ════════════════════════════════════════════════════════════════════
+    // ═══ SAFE YATRA OFFLINE FINDING NETWORK (BLE Mesh) ═══════════════════════════
+    // AirTag-like crowdsourced BLE tracking + Cell Tower offline positioning
+    // Tourists' phones relay each other's locations even without internet.
+
+    const SafeYatraMesh = (window.Capacitor && window.Capacitor.Plugins)
+        ? window.Capacitor.Plugins.SafeYatraMesh : null;
+
+    let meshActive = false;
+    let meshSyncInterval = null;
+
+    /**
+     * Initializes the Safe Yatra Offline Mesh Network.
+     * Starts BLE advertising (beacon) + duty-cycled relay scanning.
+     * Called when the tourist dashboard loads or a trip begins.
+     */
+    async function initSafeYatraMesh(userUidOrSecret) {
+        if (!SafeYatraMesh) {
+            console.log('[Mesh] Not running on Android — Mesh plugin unavailable.');
+            return;
+        }
+        try {
+            const result = await SafeYatraMesh.startMesh({
+                masterSecret: userUidOrSecret || 'GUEST_TOURIST_KEY',
+                isSos: false
+            });
+            meshActive = true;
+            console.log('[Mesh] Offline Finding Network started:', result.status);
+            updateMeshStatusUI(true, false);
+
+            // Start periodic store-and-forward sync
+            startMeshRelaySync();
+        } catch (err) {
+            console.warn('[Mesh] Init error:', err);
+            updateMeshStatusUI(false, false);
+        }
+    }
+
+    /**
+     * Activates Emergency SOS mode on the BLE mesh.
+     * Switches the beacon to high-frequency broadcast (~160ms) so nearby
+     * tourists detect the distressed tourist faster.
+     */
+    async function triggerMeshEmergency(userUidOrSecret) {
+        if (!SafeYatraMesh) return;
+        try {
+            await SafeYatraMesh.triggerEmergencySos({
+                masterSecret: userUidOrSecret || 'GUEST_TOURIST_KEY'
+            });
+            console.log('[Mesh] 🚨 SOS BLE Broadcast activated at high frequency!');
+            updateMeshStatusUI(true, true);
+        } catch (err) {
+            console.warn('[Mesh] SOS activation error:', err);
+        }
+    }
+
+    /**
+     * Cancels SOS mode and reverts to standard low-power BLE beacon.
+     */
+    async function cancelMeshEmergency(userUidOrSecret) {
+        if (!SafeYatraMesh) return;
+        try {
+            await SafeYatraMesh.cancelEmergencySos({
+                masterSecret: userUidOrSecret || 'GUEST_TOURIST_KEY'
+            });
+            console.log('[Mesh] SOS cancelled. Reverted to normal tracking.');
+            updateMeshStatusUI(true, false);
+        } catch (err) {
+            console.warn('[Mesh] SOS cancel error:', err);
+        }
+    }
+
+    /**
+     * Store-and-Forward Sync: Flushes queued relay sightings to the backend
+     * whenever this device has internet connectivity.
+     */
+    async function syncOfflineRelaySightings() {
+        if (!SafeYatraMesh || !navigator.onLine) return;
+
+        try {
+            const res = await SafeYatraMesh.getPendingSightings({ limit: 50 });
+            const sightings = res.sightings || [];
+
+            if (sightings.length === 0) return;
+            console.log(`[Mesh] Syncing ${sightings.length} pending relay sighting(s)...`);
+
+            const syncedIds = [];
+            for (const item of sightings) {
+                try {
+                    // Push to Firestore if available
+                    if (typeof db !== 'undefined' && db.collection) {
+                        await db.collection('mesh_sightings').add({
+                            eid: item.eid,
+                            witness_lat: item.witness_lat,
+                            witness_lon: item.witness_lon,
+                            accuracy: item.accuracy,
+                            loc_source: item.loc_source || 'GPS',
+                            rssi: item.rssi,
+                            is_sos: item.is_sos,
+                            detected_at: item.timestamp,
+                            uploaded_at: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+
+                        // If the offline tourist has SOS active, escalate to Admin alerts immediately!
+                        if (item.is_sos) {
+                            const alertId = 'mesh_sos_' + item.eid.substring(0, 8) + '_' + item.timestamp;
+                            await db.collection('alerts').doc(alertId).set({
+                                id: alertId,
+                                type: 'SOS',
+                                name: 'Offline Tourist (Relayed via Mesh)',
+                                phone: 'BLE EID: ' + item.eid.substring(0, 8) + '…',
+                                city: 'Offline Mesh Sighting (±' + Math.round(item.accuracy) + 'm)',
+                                lat: item.witness_lat,
+                                lng: item.witness_lon,
+                                bat: 10,
+                                time: new Date(item.timestamp * 1000).toLocaleTimeString('en-GB'),
+                                status: 'active',
+                                isMeshRelay: true,
+                                eid: item.eid,
+                                accuracy: item.accuracy,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            }, { merge: true });
+                        }
+                    }
+                    syncedIds.push(item.local_id);
+                } catch (uploadErr) {
+                    console.warn('[Mesh] Failed to upload sighting:', uploadErr);
+                }
+            }
+
+            // Mark successfully uploaded sightings
+            if (syncedIds.length > 0) {
+                await SafeYatraMesh.markSightingsSyncedBatch({ localIds: syncedIds });
+                console.log(`[Mesh] ✓ ${syncedIds.length} sighting(s) synced to cloud.`);
+            }
+        } catch (err) {
+            console.error('[Mesh] Relay sync error:', err);
+        }
+    }
+
+    /**
+     * Starts periodic relay sync and hooks into online/offline events.
+     */
+    function startMeshRelaySync() {
+        if (meshSyncInterval) clearInterval(meshSyncInterval);
+
+        // Sync immediately if online
+        syncOfflineRelaySightings();
+
+        // Auto-sync every 60 seconds
+        meshSyncInterval = setInterval(syncOfflineRelaySightings, 60000);
+
+        // Also flush when connectivity returns
+        window.addEventListener('online', syncOfflineRelaySightings);
+    }
+
+    /**
+     * Gets the best available offline location fix (GPS → Cell Tower → Last Known).
+     */
+    async function getOfflineLocationFix() {
+        if (!SafeYatraMesh) return null;
+        try {
+            const fix = await SafeYatraMesh.getOfflineLocation();
+            console.log(`[Mesh] Offline fix: ${fix.latitude.toFixed(5)}, ${fix.longitude.toFixed(5)} ±${fix.accuracy}m (${fix.source})`);
+            return fix;
+        } catch (err) {
+            console.warn('[Mesh] Offline location unavailable:', err);
+            return null;
+        }
+    }
+
+    /**
+     * Updates the mesh status indicator on the tourist dashboard UI.
+     */
+    function updateMeshStatusUI(active, isSos) {
+        const indicator = document.getElementById('mesh-status-indicator');
+        if (!indicator) return;
+
+        if (isSos) {
+            indicator.innerHTML = '🚨 SOS Mesh Active';
+            indicator.style.color = 'var(--red)';
+            indicator.style.display = '';
+        } else if (active) {
+            indicator.innerHTML = '📡 Mesh Protected';
+            indicator.style.color = 'var(--mint)';
+            indicator.style.display = '';
+        } else {
+            indicator.innerHTML = '⚠ Mesh Offline';
+            indicator.style.color = 'var(--textMuted)';
+            indicator.style.display = '';
+        }
+    }
+
+    // ═══ END SAFE YATRA OFFLINE FINDING NETWORK ═════════════════════════════
+
     let TOURISTS = []; // Mutable — real users will be fetched from Firebase
     let touristMapMarkers = {}; // Track map markers by uid for live updates
 
@@ -1530,6 +1724,16 @@
         });
       }, err => console.error('Alerts Snapshot Error:', err));
 
+      // Listen for Crowdsourced BLE Mesh Sightings
+      db.collection('mesh_sightings').orderBy('uploaded_at', 'desc').limit(20).onSnapshot(snap => {
+        snap.docChanges().forEach(change => {
+          if (change.type === 'added') {
+            const s = change.doc.data();
+            dsLog(`[MESH] RELAY SIGHTING: EID ${s.eid ? s.eid.substring(0,8) : 'unknown'}… spotted at ${s.witness_lat?.toFixed(4)}, ${s.witness_lon?.toFixed(4)} (±${Math.round(s.accuracy || 0)}m via ${s.loc_source || 'GPS'})`);
+          }
+        });
+      }, err => console.log('Mesh sightings listener inactive:', err));
+
       // Note: tourist_locations real-time handling is now built into fetchRealTourists() to prevent race conditions.
     }
 
@@ -1684,6 +1888,11 @@
       setInterval(checkGeoFences, 10000);
       setInterval(() => { calcSafetyScore(); }, 15000);
       setInterval(fetchSafetyNews, 300000); // refresh news every 5 min
+
+      // ═══ Initialize Offline Finding Network (BLE Mesh) ═══
+      // Starts BLE beacon broadcasting + relay scanning for nearby tourists
+      const meshKey = (auth.currentUser && auth.currentUser.uid) || 'GUEST_TOURIST_KEY';
+      initSafeYatraMesh(meshKey);
 
       // Sync with Admin Data
       startTouristRealtimeSync();
@@ -2203,6 +2412,19 @@
       }
     }
 
+    function toggleCardAccordion(contentId, iconId) {
+      const content = document.getElementById(contentId);
+      const icon = document.getElementById(iconId);
+      if (!content || !icon) return;
+      if (content.style.display === 'none' || !content.style.display) {
+        content.style.display = 'block';
+        icon.textContent = '−';
+      } else {
+        content.style.display = 'none';
+        icon.textContent = '+';
+      }
+    }
+
     function drawSafetyGauge(score) {
       const c = document.getElementById('t-score-canvas'); if (!c) return;
       const ctx = c.getContext('2d'), cx = 80, cy = 80, r = 65;
@@ -2546,6 +2768,12 @@
       const loc = tUserLoc ? `${tUserLoc.lat.toFixed(5)}, ${tUserLoc.lng.toFixed(5)}` : 'GPS unavailable';
       document.getElementById('t-sos-status').innerHTML = '<b style="color:var(--red)">🚨 SOS ACTIVE — Police notified</b>';
       document.getElementById('t-sos-btn').style.background = 'linear-gradient(135deg,#8B0000,#D80032)';
+
+      // ═══ ACTIVATE BLE MESH EMERGENCY BROADCAST ═══
+      // Switches BLE beacon to high-frequency SOS mode so nearby tourists
+      // can detect and relay this tourist's location even without internet.
+      const meshSecret = (auth.currentUser && auth.currentUser.uid) || 'GUEST_TOURIST_KEY';
+      triggerMeshEmergency(meshSecret);
 
       // PUSH TO FIRESTORE FOR ADMIN
       if (auth.currentUser && tUserLoc) {
